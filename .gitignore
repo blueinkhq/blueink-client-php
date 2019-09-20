@@ -1,0 +1,11 @@
+# PhpStorm
+.idea/
+.DS_Store
+
+# Composer
+composer.phar
+/vendor/
+
+# examples
+examples/_*
+
