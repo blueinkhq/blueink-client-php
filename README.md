@@ -40,12 +40,13 @@ $request_data = [
     'is_test' => true,
     'packets' => [
          {
-            "name": "Peter Gibbons",
-            "email": "peter.gibbons@example.com",
-            "key": "signer-1",
+             'name' => 'Peter Gibbons',
+             'email' => 'peter.gibbons@example.com',
+             'key' => 'signer-1',
          }
     ],
     'documents' => [
+        'key' => 'doc-01',
         'template_id' => $template_01->id,
         'assignments' => [
             'role' => $role,

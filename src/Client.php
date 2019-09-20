@@ -76,19 +76,33 @@ class Client extends RestClient
      *          'totalResults' => 1071,
      *      ]
      */
-    public function getPagination($response) {
+    public static function getPagination($response) {
         $pagination_header = $response->getHeader('X-BlueInk-Pagination');
         if ($pagination_header) {
-            list($current, $total, $per, $results) = explode(',', $pagination_header);
-            return [
-                'currentPage' => $current,
-                'totalPages' => $total,
-                'perPage' => $per,
-                'totalResults' => $results,
-            ];
+            return $this->parsePaginationHeader($pagination_header);
         }
 
         return null;
     }
 
+    /**
+     * Parse a BlueInk pagination header value
+     * @param $pagination_header the value of X-BlueInk-Pagination
+     * @return An array with a shape like the following.
+     *      [
+     *          'currentPage' => 1,
+     *          'totalPages' => 22,
+     *          'perPage' => 50,
+     *          'totalResults' => 1071,
+     *      ]
+     */
+    public static function parsePaginationHeader($pagination_header) {
+        list($current, $total, $per, $results) = explode(',', $pagination_header);
+        return [
+            'currentPage' => intval($current),
+            'totalPages' => intval($total),
+            'perPage' => intval($per),
+            'totalResults' => intval($results),
+        ];
+    }
 }
