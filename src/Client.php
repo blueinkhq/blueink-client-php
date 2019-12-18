@@ -19,6 +19,8 @@ class Client extends RestClient
      * @param array $auth_token
      * @param array $config. Like $config passed to RestClient, but can contain an optional baseUri key, which
      *  will be accessible on any RestResource instance derived from BaseResource via the getClientBaseUri() method.
+     *  If baseUri is not passed in the the $config, then the value of environment variable BLUEINK_API_URL is used,
+     *  or the hardcoded default (see BaseResource).
      */
     public function __construct($auth_token = null, array $config = [])
     {
@@ -79,7 +81,7 @@ class Client extends RestClient
     public static function getPagination($response) {
         $pagination_header = $response->getHeader('X-BlueInk-Pagination');
         if ($pagination_header) {
-            return $this->parsePaginationHeader($pagination_header);
+            return self::parsePaginationHeader($pagination_header);
         }
 
         return null;
