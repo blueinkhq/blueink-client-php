@@ -37,6 +37,10 @@ class PacketResource extends BaseResource
                 'method' => 'GET',
                 'path' => '/{0}/coe/',
             ],
+            'embedUrl' => [
+                'method' => 'POST',
+                'path' => '/{0}/embed_url/',
+            ],
         ];
     }
 }
