@@ -1,6 +1,6 @@
 {
   "name": "blueink/blueink-client-php",
-  "description": "A PHP client library to access the BlueInk eSignature REST API",
+  "description": "A PHP client library for the BlueInk eSignature REST API",
   "license": "MIT",
   "type": "library",
   "version": "1.0.0",
