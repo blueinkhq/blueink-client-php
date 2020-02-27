@@ -1,7 +1,7 @@
 # BlueInk API Client
 
-A PHP client to interact with the BlueInk REST API v2. 
-For an overview of the API, see the [API v2 Documentation](https://blueink.com/api-docs/).  
+A PHP client to interact with the BlueInk REST API. 
+For an overview of the API, see the [API v2 Documentation](https://blueink.com/esignature-api/api-docs/).  
 
 This client library relies on [guzzle](http://docs.guzzlephp.org/en/stable/) 
 and [snorlax](https://github.com/ezdeliveryco/snorlax), under the hood.
@@ -11,7 +11,7 @@ and [snorlax](https://github.com/ezdeliveryco/snorlax), under the hood.
 ```php
 use BlueInk\ApiClient\Client;
 
-$client = new Client('<AUTH_TOKEN_HERE>');
+$client = new Client('<API_KEY_HERE>');
 
 // Get a list of Bundles
 $bundle_list = $client->bundles->list();
