@@ -1,10 +1,11 @@
 {
   "name": "blueink/blueink-client-php",
-  "description": "A PHP based REST client to access the BlueInk API v2",
+  "description": "A PHP client library to access the BlueInk eSignature REST API",
   "license": "MIT",
   "type": "library",
-  "homepage": "https://blueink.com/",
-  "keywords": ["esignature", "blueink", "api", "guzzle", "snorlax"],
+  "version": "1.0.0",
+  "homepage": "https://github.com/blueinkhq/blueink-client-php",
+  "keywords": ["esignature", "e-signature", "blueink", "api", "guzzle", "snorlax"],
   "require": {
     "php": ">=5.6",
     "guzzlehttp/guzzle": "~6.1",
