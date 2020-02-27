@@ -3,7 +3,7 @@
   "description": "A PHP client library for the BlueInk eSignature REST API",
   "license": "MIT",
   "type": "library",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/blueinkhq/blueink-client-php",
   "keywords": ["esignature", "e-signature", "blueink", "api", "guzzle", "snorlax"],
   "require": {
