@@ -4,7 +4,7 @@ A PHP client to interact with the BlueInk REST API.
 For an overview of the API, see the [API v2 Documentation](https://blueink.com/esignature-api/api-docs/).  
 
 This client library relies on [guzzle](http://docs.guzzlephp.org/en/stable/) 
-and [snorlax](https://github.com/ezdeliveryco/snorlax), under the hood.
+and [snorlax](https://github.com/blueinkhq/snorlax), under the hood.
 
 ## Getting Started
 
