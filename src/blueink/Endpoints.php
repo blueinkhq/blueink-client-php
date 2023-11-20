@@ -1,5 +1,5 @@
 <?php
-#note 
+# NOTE
 # considering move all the endpoint to class with static function.
 # implement with bundle endpoints first then will make for other
 namespace Blueink\ClientSDK;

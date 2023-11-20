@@ -44,9 +44,12 @@ class Helper
 	 * 
 	 * @param object $object: Object
 	 * 
-	 * @return object Object after remove null properties
+	 * @return mixed Object after remove null properties
 	 */
-	public static function remove_null_properties(object $object) {
+	public static function remove_null_properties(?object $object) {
+		if (is_null($object)) {
+			return null;
+		}
 		
 		return (object) array_filter((array) $object);
 	}

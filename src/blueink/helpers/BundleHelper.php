@@ -16,7 +16,7 @@ class BundleHelper
 	protected ?array $file_names;
 	protected ?array $file_types;
 	protected ?array $files;
-	#note This description should be change follow the Guzzle description for __construct function
+	# NOTE This description should be change follow the Guzzle description for __construct function
 	/**
 	 * __construct BundleHelper::class
 	 * Parameter should be key => value array with the following key and value bellow

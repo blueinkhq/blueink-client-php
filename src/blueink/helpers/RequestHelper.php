@@ -118,17 +118,20 @@ class RequestHelper
 		try {
 			$res = $http->request($method, $url);
 		} catch(Exception\ClientException $e) {
-			echo $e->getResponse()->getBody();
-			return $e;
+			# TODO following guzzle exception
+			var_dump($e);
+			var_dump(json_decode($e, true));
+			return json_decode($e, true);
 		}
 
 		#remove --- this block must be remove before commit
 		$res_body = $res->getBody();
 		$json = json_decode($res_body, true);
 		echo json_encode($json, JSON_PRETTY_PRINT);
-		echo "\n Status: ". $res->getStatusCode() ."\n";
+		echo "\n ======= ". $method . " ======= \n";
+		echo "\n ======= Status: ". $res->getStatusCode() ." ======= \n";
 		# ---
-		return $res->getBody();
+		return json_decode($res->getBody(), true);
 	}
 	/**
 	 * building request header
@@ -154,4 +157,5 @@ class RequestHelper
 
 		return $headers;
 	}
+	# TODO getLastResponse should support last response 
 }
