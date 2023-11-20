@@ -23,6 +23,5 @@ class ClientTest extends TestCase
             'perPage' => 20,
             'totalResults' => 96,
         ], $result);
-
     }
 }

@@ -10,3 +10,8 @@ composer.phar
 examples/_*
 
 .phpunit.result.cache
+.env
+local-test.php
+
+# vscode
+.vscode
