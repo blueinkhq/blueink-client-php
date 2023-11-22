@@ -2,16 +2,38 @@
 namespace Blueink\ClientSDK;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
-require_once __DIR__.'/Helper.php';
+require_once __DIR__ . '/Helper.php';
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception;
+use GuzzleHttp\Exception\RequestException;
 use ErrorException;
 
 class Pagination
 {
+	public int $page_number;
+	public int $total_pages;
+	public int $per_page;
+	public int $total_results;
 	/**
-	 * return the pagination of response data
+	 * Pagination fields parsed out for Blueink paged response from 'X-Blueink-Pagination'
+	 * 
+	 * @param string $pagination_header: string of pagination
+	 * 
+	 * @return void
 	 */
+	public function __construct(string $pagination_header)
+	{
+		$header_array = explode(',', $pagination_header);
+		$this->page_number = (int) $header_array[0];
+		$this->total_pages = (int) $header_array[1];
+		$this->per_page = (int) $header_array[2];
+		$this->total_results = (int) $header_array[3];
+	}
+	public function pagination_as_string()
+	{
+		return "page_number: " . $this->page_number . ", per_page:" . $this->per_page
+			. ", total_pages:" . $this->total_pages . ", total_results: " . $this->total_results;
+	}
 }
 
 class RequestHelper
@@ -114,22 +136,14 @@ class RequestHelper
 			'data' => $data,
 			'body' => json_encode($body),
 		]);
-
-		try {
-			$res = $http->request($method, $url);
-		} catch(Exception\ClientException $e) {
-			# TODO following guzzle exception
-			var_dump($e);
-			var_dump(json_decode($e, true));
-			return json_decode($e, true);
-		}
-
+		# NOTE 
+		# The user need to try catch and handle exception themselves following Guzzle Exception
+		$res = $http->request($method, $url);
 		#remove --- this block must be remove before commit
 		$res_body = $res->getBody();
 		$json = json_decode($res_body, true);
 		echo json_encode($json, JSON_PRETTY_PRINT);
-		echo "\n ======= ". $method . " ======= \n";
-		echo "\n ======= Status: ". $res->getStatusCode() ." ======= \n";
+		echo "\n ===== \n";
 		# ---
 		return json_decode($res->getBody(), true);
 	}
@@ -158,4 +172,5 @@ class RequestHelper
 		return $headers;
 	}
 	# TODO getLastResponse should support last response 
+	
 }

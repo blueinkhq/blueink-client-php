@@ -6,6 +6,7 @@
 
 require_once "src/blueink/Client.php";
 require_once "src/blueink/models/Bundles.php";
+use GuzzleHttp\Exception as GuzzleException;
 use Blueink\ClientSDK as Blueink;
 
 # NOTE
@@ -30,7 +31,15 @@ $packet = Blueink\Packet::create(null, $_name, ['email' => $_email]);
 $document = Blueink\Document::create(null, ['file_url' => $_file_url]);
 $bundle = new Blueink\Bundle(['packets' => [$packet], 'documents' => [$document]]);
 
-// $new_bundle = $client->bundles->create($bundle);
-// $client->bundles->list('2', '2');
-$client->bundles->retrieve('xxx');
-// $client->bundles->cancel($new_bundle['id']);
+try {
+    $new_bundle = $client->bundles->create($bundle);
+    // $client->bundles->list('2', '2');
+    // $client->bundles->cancel($new_bundle['id']);
+    $client->bundles->retrieve($new_bundle['id']);
+} catch (GuzzleException\RequestException $e) {
+    # handle the exception
+    echo 'Got an exception';
+    $response = $e->getResponse();
+    echo "Status Code: " . $response->getStatusCode() . "\n";
+    echo "Reason: " . $response->getReasonPhrase() . "\n";
+}
