@@ -19,12 +19,12 @@ class BundleSubClient extends SubClient
 	/**
 	 * Need some description here
 	 * 
-	 * @param Bundle $data: bundle data
+	 * @param array $data: bundle data
 	 * @param ?array $file: array of file
 	 * 
 	 * @return mixed
 	 */
-	public function create(Bundle $data = null, ?array $file = null)
+	public function create(array $data = null, ?array $file = null)
 	{
 		if (is_null($data)) {
 			throw new \ErrorException("Data is required");
@@ -32,7 +32,7 @@ class BundleSubClient extends SubClient
 
 		$url = parent::build_url(BundleEndpoints::create());
 		if (is_null($file)) {
-			$response = parent::$request->post($url, ['body' => $data, 'content_type' => 'application/json']);
+			$response = parent::$request->post($url, $data);
 		} else {
 			$files_data = $this->prepare_files($file);
 			if (is_null($files_data)) {
@@ -91,12 +91,13 @@ class BundleSubClient extends SubClient
 			$params = Helper::merge_additional_data($params, $additional_data);
 		}
 
-		$additional_data = [
+		# NOTE need to check again this logic
+		$params = [
 			'data' => $related_data,
 			'params' => $params
 		];
 		$url = parent::build_url(BundleEndpoints::list());
-		$response = parent::$request->get($url, $additional_data);
+		$response = parent::$request->get($url, ['params' => $params]);
 
 		return $response;
 	}
@@ -111,7 +112,7 @@ class BundleSubClient extends SubClient
 	public function retrieve(string $bundle_id, bool $related_data = false)
 	{
 		$url = parent::build_url(BundleEndpoints::retrieve($bundle_id));
-		$response = parent::$request->get($url, ['data' => $related_data]);
+		$response = parent::$request->get($url, ['params' => $related_data]);
 
 		return $response;
 	}
