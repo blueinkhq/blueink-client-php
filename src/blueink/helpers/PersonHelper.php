@@ -6,68 +6,76 @@ namespace Blueink\ClientSDK;
 
 class PersonHelper
 {
-	protected $name;
-	protected $metadata;
-	protected $phones;
-	protected $emails;
-	public function __contruct($name, $metadata, $phones, $emails)
+	public ?string $name;
+	public ?array $metadata;
+	public ?array $phones;
+	public ?array $emails;
+	public function __contruct(?array $params = null)
 	{
-		$this->name = $name;
-		$this->metadata = $metadata;
-		$this->phones = $phones;
-		$this->emails = $emails;
+		$this->name = $params["name"] ?? null;
+		$this->metadata = $params["metadata"] ?? null;
+		$this->phones = $params["phones"] ?? null;
+		$this->emails = $params["emails"] ?? null;
 	}
-	public function add_phone($phone)
+	# TODO func description
+	public function add_phone(string $phone)
 	{
 		$this->phones[] = $phone;
 	}
-	public function set_phones($phone)
+	# TODO func description
+	public function set_phones(array $phone)
 	{
 		$this->phones = $phone;
 	}
+	# TODO func description
 	public function get_phones()
 	{
 		return $this->phones;
 	}
-	public function add_email($email)
+	# TODO func description
+	public function add_email(string $email)
 	{
 		$this->emails[] = $email;
 	}
-	public function set_emails($emails)
+	# TODO func description
+	public function set_emails(array $emails)
 	{
 		$this->emails = $emails;
 	}
+	# TODO func description
 	public function get_emails()
 	{
 		return $this->emails;
 	}
-	public function set_metadata($metadata)
+	# TODO func description
+	public function set_metadata(array $metadata)
 	{
 		$this->metadata = $metadata;
 	}
-	public function set_name($name)
+	# TODO func description
+	public function set_name(string $name)
 	{
 		$this->name = $name;
 	}
-	public function as_dict($additional_data)
+	# TODO func description
+	public static function as_array(array $additional_data)
 	{
 		$channels = array();
-		foreach ($this->emails as $email) {
+		foreach (self::$emails as $email) { 
 			$channels[] = ["email" => $email, "kind" => "em"];
 		}
-		foreach ($this->phones as $phone) {
+		foreach (self::$phones as $phone) {
 			$channels[] = ["phone" => $phone, "kind" => "mp"];
 		}
 
 		$person_out = [
-			"name" => $this->name,
-			"metadata" => $this->metadata,
+			"name" => self::$name,
+			"metadata" => self::$metadata,
 			"channels" => $channels,
 		];
 
-		$out_dict[] = $person_out;
-		$out_dict[] = $additional_data;
+		$data = Helper::merge_additional_data($person_out, $additional_data);
 
-		return $out_dict;
+		return $data;
 	}
 }

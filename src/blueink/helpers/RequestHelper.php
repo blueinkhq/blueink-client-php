@@ -116,7 +116,7 @@ class RequestHelper
 	 * @param string method of request
 	 * @param string url of request
 	 * @param ?array [key => value] with fixed key you can have
-	 * such as data, json, files, params, headers and content_type
+	 * such as body for object type, json, files, params, headers and content_type
 	 * 
 	 * @return mixed
 	 */
@@ -124,9 +124,15 @@ class RequestHelper
 	{
 		$params = $additional_params['params'] ?? null;
 		$data = $additional_params['data'] ?? null;
-		$json = $additional_params['body'] ?? null;
-		$body = Helper::remove_null_properties($json) ?? null;
-		$content_type = $additional_params['content_type'] ?? null;
+		# If params of body is json
+		$body = $additional_params['json'] ?? null;
+		$content_type = $additional_params['content_type'] ?? 'application/json';
+		if (is_null($body)) {
+			# If params body is object
+			$json = $additional_params['body'] ?? null;
+			$body = Helper::remove_null_properties($json) ?? null;
+			$body = json_encode($body);
+		}
 		$headers = $additional_params['headers'] ?? null;
 		$headers = $this->build_header($content_type, $headers);
 
@@ -134,7 +140,7 @@ class RequestHelper
 			'headers' => $headers,
 			'query' => $params,
 			'data' => $data,
-			'body' => json_encode($body),
+			'body' => $body,
 		]);
 		# NOTE 
 		# The user need to try catch and handle exception themselves following Guzzle Exception
@@ -143,7 +149,7 @@ class RequestHelper
 		$res_body = $res->getBody();
 		$json = json_decode($res_body, true);
 		echo json_encode($json, JSON_PRETTY_PRINT);
-		echo "\n ===== \n";
+		echo "\n === $method === \n";
 		# ---
 		return json_decode($res->getBody(), true);
 	}

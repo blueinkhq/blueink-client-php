@@ -28,10 +28,10 @@ class Helper
 	 * 
 	 * @return array array after merge
 	 */
-	public static function merge_additional_data(array $data = [], array $additional_data = [])
+	public static function merge_additional_data(?array $data = [], ?array $additional_data = [])
 	{
 		if (!is_array($data) || !is_array($additional_data))
-			throw new \ErrorException('Merge Error! Data is not array');
+			throw new \ErrorException("Merge Error! Data is not array \n\n");
 
 		if (!is_null($additional_data)) {
 			$data = array_merge($data, $additional_data);
