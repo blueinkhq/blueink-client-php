@@ -3,6 +3,7 @@ namespace Blueink\ClientSDK;
 require_once __DIR__ ."/constants.php";
 require_once __DIR__ ."/helpers/RequestHelper.php";
 require_once __DIR__ ."/subclients/BundleSubClient.php";
+require_once __DIR__ ."/subclients/PersonSubClient.php";
 use ErrorException;
 
 class Client
@@ -11,6 +12,7 @@ class Client
 	private $base_url;
 	private RequestHelper $request_helper;
 	public BundleSubClient $bundles;
+	public PersonSubClient $persons;
 	/**
 	 * Need some description here following guzzle
 	 */
@@ -41,5 +43,6 @@ class Client
 		# create bundle helper
 		$this->request_helper = new RequestHelper($this->private_api_key);	
 		$this->bundles = new BundleSubClient($this->base_url, $this->request_helper);
+		$this->persons = new PersonSubClient($this->base_url, $this->request_helper);
 	}
 }

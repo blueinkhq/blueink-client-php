@@ -3,7 +3,9 @@
 # considering move all the endpoint to class with static function.
 # implement with bundle endpoints first then will make for other
 namespace Blueink\ClientSDK;
-
+/**
+ * List all of the bundle enpoints
+ */
 class BundleEndpoints
 {
 	public static function create()
@@ -35,21 +37,55 @@ class BundleEndpoints
 		return "/bundles/$bundle_id/data/";
 	}
 }
+/**
+ * List all of the person endpoints
+ */
+class PersonEndpoints
+{
+	public static function create()
+	{
+		return "/persons/";
+	}
+	public static function list()
+	{
+		return "/persons/";
+	}
+	public static function retrieve(string $person_id)
+	{
+		return "/persons/$person_id/";
+	}
+	public static function update(string $person_id)
+	{
+		return "/persons/$person_id/";
+	}
+	public static function delete(string $person_id)
+	{
+		return "/persons/$person_id/";
+	}
+}
+/**
+ * List all of the packet endpoints
+ */
+class PacketEndpoints
+{
+	public static function embed_url(string $packet_id)
+	{
+		return "/packets/$packet_id/embed_url";
+	}
+	public static function update(string $packet_id)
+	{
+		return "/packets/$packet_id/";
+	}
+	public static function remind(string $packet_id)
+	{
+		return "/packets/$packet_id/remind/";
+	}
+	public static function retrieve_coe(string $packet_id)
+	{
+		return "/packets/$packet_id/coe/";
+	}
+}
 
-const PERSON = array(
-	"CREATE" => "/persons/",
-	"LIST" => "/persons/",
-	"RETRIEVE" => "/persons/{person_id}",
-	"UPDATE" => "/persons/{person_id}",
-	"CANCEL" => "/persons/{person_id}",
-);
-
-const PACKETS = array(
-	"EMBED_URL" => "/packets/{packet_id}/embed_url",
-	"UPDATE" => "/packets/{packet_id}/",
-	"REMIND" => "/packets/{packet_id}/remind/",
-	"RETRIEVE_COE" => "/packets/{packet_id}/coe/",
-);
 
 const TEMPLATES = array(
 	"LIST" => "/templates",
