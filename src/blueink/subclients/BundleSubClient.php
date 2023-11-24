@@ -4,9 +4,11 @@ namespace Blueink\ClientSDK;
 require_once __DIR__ . '/SubClient.php';
 require_once __DIR__ . "//../Endpoints.php";
 require_once __DIR__ . "/../helpers/Helper.php";
+require_once __DIR__ . "/../helpers/BundleHelper.php";
 
 class BundleSubClient extends SubClient
 {
+	# TODO prepare file function
 	/**
 	 * prepare file before create bundle
 	 * 
@@ -44,15 +46,20 @@ class BundleSubClient extends SubClient
 
 		return $response;
 	}
-	# TODO description for func
 	/**
-	 *
+	 * Post a Bundle to Blueink application
+	 * 
+	 * Provided as a convenience to simplify posting of a Bundle. This is the recommended way to create a Bundle
+	 * 
+	 * @param array $data: data that has been configured as desired.
+	 * 
+	 * @return mixed Bundle object
 	 */
-	public function create_from_bundle_helper()
+	public function create_from_bundle_helper(array $data) 
 	{
-		# TODO create bundle from helper
-		return '';
+		return $this->create(['body' => BundleHelper::as_data($data)]);
 	}
+	# TODO paginated function
 	/**
 	 * An iterable object such that you may lazily fetch a number of Bundles
 	 * 
@@ -64,8 +71,8 @@ class BundleSubClient extends SubClient
 	 * @return mixed Paginated object
 	 */
 	public function paged_list(?int $page = 1, ?int $per_page = 50, ?bool $related_data = false, ?array $query_params = null) {
-		# TODO paginated function
-		return [];
+		
+		return ;
 	}
 	/**
 	 * retrieve list of bundles

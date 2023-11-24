@@ -3,19 +3,23 @@ namespace Blueink\ClientSDK;
 
 class BundleHelper
 {
-	protected ?string $label;
-	protected ?string $email_subject;
-	protected ?string $email_message;
-	protected ?bool $in_order;
-	protected ?bool $is_test;
-	protected ?string $custom_key;
-	protected ?string $team;
-	protected ?array $cc_emails;
-	protected ?array $documents;
-	protected ?array $packets;
-	protected ?array $file_names;
-	protected ?array $file_types;
-	protected ?array $files;
+	public array $packets;
+	public array $documents;
+	public ?string $label;
+	public ?string $in_order;
+	public ?string $email_subject;
+	public ?string $email_message;
+	public ?string $sms_message;
+	public ?string $requester_email;
+	public ?array $cc_emails;
+	public ?string $custom_key;
+	public ?string $team;
+	public ?bool $is_test;
+	public ?string $status;
+	public ?int $reminder_offset;
+	public ?int $reminder_interval;
+	public ?string $reminder_expires;
+	public ?array $cc_sender;
 	# NOTE This description should be change follow the Guzzle description for __construct function
 	/**
 	 * __construct BundleHelper::class
@@ -95,7 +99,7 @@ class BundleHelper
 		$this->documents[$document->key] = $document;
 
 		return $document->key;
-	} 
+	}
 	/**
 	 * Add file using a file path. File context used, should safely open/close file
 	 * 
@@ -139,5 +143,36 @@ class BundleHelper
 	public function add_document_template(string $template_id, array $assignments, array $initial_field_values)
 	{
 
+	}
+	/**
+	 * Bundle helper function featch array to object
+	 * 
+	 * @param array $data: bundle data
+	 * 
+	 * @return Bundle bundle object
+	 */
+	public static function as_data(array $data)
+	{
+		$packets = self::$packets;
+		$documents = self::$documents;
+		$bundle = Bundle::create($packets, $documents, [
+			'label' => self::$label,
+			'in_order' => self::$in_order,
+			'email_subject' => self::$email_subject,
+			'email_message' => self::$email_message,
+			'sms_message' => self::$sms_message,
+			'requester_email' => self::$requester_email,
+			'cc_emails' => self::$cc_emails,
+			'custom_key' => self::$custom_key,
+			'team' => self::$team,
+			'is_test' => self::$is_test,
+			'status' => self::$status,
+			'reminder_offset' => self::$reminder_offset,
+			'reminder_interval' => self::$reminder_interval,
+			'reminder_expires' => self::$reminder_expires,
+			'cc_sender' => self::$cc_sender
+		]);
+
+		return $bundle;
 	}
 }

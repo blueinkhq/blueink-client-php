@@ -28,13 +28,14 @@ class PersonSubClient extends SubClient
     /**
      * Create a person using PersonHelper convenience object
      * 
-     * @param PersonHelper $person_helper: data as PersonHelper type
+     * @param PersonHelper $person_helper: data as PersonHelper
      * 
      * @return mixed Person object
      */
     public function create_from_person_helper(PersonHelper $person_helper, ?array $additional_data = null)
     {
-        return $this->create($person_helper::as_array($additional_data));
+        $data = $person_helper->as_array($additional_data);
+        return $this->create(['body' => $data]);
     }
     # TODO need to test the paged_list from bundle helper first
     /**
@@ -49,7 +50,7 @@ class PersonSubClient extends SubClient
     public function paged_list(?int $page = 1, ?int $per_page = 50, ?array $additional_data = null)
     {
 
-        return;
+        return ;
     }
     /**
      * Return a list of persons (signer)

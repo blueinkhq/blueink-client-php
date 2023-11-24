@@ -79,11 +79,19 @@ function test_persons() {
             }
         ]
     }';
+    $json3 = [
+        'name' => 'ccnebao',
+        'metadata' => ['occupation' => 'legend'],
+        'channels' => [
+            ['email' => 'ccnebao@gmail.com', 'kind' => 'em'],
+            ['phone' => '505 555 1234', 'kind' => 'mp']
+        ]
+    ];
     $client = new Blueink\Client(getenv('BLUEINK_PRIVATE_API_KEY'));
     try {
-        $person = $client->persons->create(['json' => $json]);
+        $person = $client->persons->create(['body' => $json3]);
         $client->persons->list('2','1');
-        $client->persons->update($person['id'], ['json' => $json2]);
+        $client->persons->update($person['id'], ['json' => $json]);
         $client->persons->retrieve($person['id']);
         $client->persons->delete($person['id']);
     } catch (GuzzleException\RequestException $e) {
@@ -95,4 +103,4 @@ function test_persons() {
     }
 }
 // test_bundles();
-test_persons();
+// test_persons();

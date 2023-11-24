@@ -47,7 +47,7 @@ class Helper
 	 * @return mixed Object after remove null properties
 	 */
 	public static function remove_null_properties(?object $object) {
-		if (is_null($object)) {
+		if (is_null($object) && !is_object($object)) {
 			return null;
 		}
 		

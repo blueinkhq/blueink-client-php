@@ -1,7 +1,9 @@
 <?php
 namespace Blueink\ClientSDK;
-require_once __DIR__ ."/../helpers/Helper.php";
+
+require_once __DIR__ . "/../helpers/Helper.php";
 use ErrorException;
+
 class ValidationError
 {
 	# Thinking about should do the validation error and handle error using the Guzzle Exception / Error
@@ -293,7 +295,7 @@ class Document
 		$params = ["key" => $key];
 		$params = Helper::merge_additional_data($params, $additional_data);
 		$obj = new Document($params);
-		
+
 		return Helper::remove_null_properties($obj);
 	}
 	/**
@@ -381,9 +383,15 @@ class Bundle
 		$this->cc_sender = $params["cc_sender"] ?? null;
 	}
 	/**
-	 * Need some description here
+	 * Create Bundle
+	 * 
+	 * @param array $packets: array of packet object
+	 * @param array $documents: array of document opbject
+	 * @param array $additional_data: additional data, default []
+	 * 
+	 * @return Bundle bundle object
 	 */
-	public static function create(Packet $packets, Document $documents, array $additional_data = [])
+	public static function create(array $packets, array $documents, array $additional_data = [])
 	{
 		$params = array(
 			"packets" => $packets,
@@ -395,9 +403,13 @@ class Bundle
 		return $obj;
 	}
 	/**
-	 * Need some description here
+	 * Add packets to bundle
+	 * 
+	 * @param Packet $packet: packet object
+	 * 
+	 * @return void
 	 */
-	public function add_packet($packet)
+	public function add_packet(Packet $packet)
 	{
 		if (is_null($this->packets)) {
 			$this->packets = array();
@@ -405,9 +417,13 @@ class Bundle
 		$this->packets[] = $packet;
 	}
 	/**
-	 * Need some description here
+	 * Add document to bundle
+	 * 
+	 * @param Document $document: document object
+	 * 
+	 * @return void
 	 */
-	public function add_document($document)
+	public function add_document(Document $document)
 	{
 		if (is_null($this->documents)) {
 			$this->documents = array();

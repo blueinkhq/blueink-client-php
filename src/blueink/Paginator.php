@@ -1,6 +1,6 @@
 <?php
 namespace Blueink\ClientSDK;
-
+# TODO need class description
 class Paginated {
     public mixed $paged_function;
     public ?int $page;
@@ -22,7 +22,7 @@ class Paginated {
         $this->next_page = $page;
         $this->item_per_page = $per_page;
     }
-    # TODO next for pagination and description for function
+    # TODO need description & testing function
     /**
      * 
      */

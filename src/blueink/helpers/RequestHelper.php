@@ -116,9 +116,9 @@ class RequestHelper
 	 * @param string method of request
 	 * @param string url of request
 	 * @param ?array [key => value] with fixed key you can have
-	 * such as body for object type, json, files, params, headers and content_type
+	 * such as body for object and array type, json, files, params, headers and content_type
 	 * 
-	 * @return mixed
+	 * @return mixed response of the request
 	 */
 	private function make_request(string $method, string $url, ?array $additional_params = [])
 	{
@@ -127,12 +127,16 @@ class RequestHelper
 		# If params of body is json
 		$body = $additional_params['json'] ?? null;
 		$content_type = $additional_params['content_type'] ?? 'application/json';
+		# If params body is object && $body is null
 		if (is_null($body)) {
-			# If params body is object
-			$json = $additional_params['body'] ?? null;
-			$body = Helper::remove_null_properties($json) ?? null;
+			$body = $additional_params['body'] ?? null;
+			if (!is_array($body)) {
+				$body = Helper::remove_null_properties($body) ?? null;
+			}
+			
 			$body = json_encode($body);
 		}
+		
 		$headers = $additional_params['headers'] ?? null;
 		$headers = $this->build_header($content_type, $headers);
 
@@ -150,7 +154,7 @@ class RequestHelper
 		$json = json_decode($res_body, true);
 		echo json_encode($json, JSON_PRETTY_PRINT);
 		echo "\n === $method === \n";
-		# ---
+		# --- #
 		return json_decode($res->getBody(), true);
 	}
 	/**
