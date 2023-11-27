@@ -4,8 +4,8 @@ require_once __DIR__ ."/constants.php";
 require_once __DIR__ ."/helpers/RequestHelper.php";
 require_once __DIR__ ."/subclients/BundleSubClient.php";
 require_once __DIR__ ."/subclients/PersonSubClient.php";
+require_once __DIR__ ."/subclients/PacketSubClient.php";
 use ErrorException;
-
 class Client
 {
 	private $private_api_key;
@@ -13,6 +13,7 @@ class Client
 	private RequestHelper $request_helper;
 	public BundleSubClient $bundles;
 	public PersonSubClient $persons;
+	public PacketSubClient $packets;
 	/**
 	 * Need some description here following guzzle
 	 */
@@ -44,5 +45,6 @@ class Client
 		$this->request_helper = new RequestHelper($this->private_api_key);	
 		$this->bundles = new BundleSubClient($this->base_url, $this->request_helper);
 		$this->persons = new PersonSubClient($this->base_url, $this->request_helper);
+		$this->packets = new PacketSubClient($this->private_api_key, $this->request_helper);
 	}
 }

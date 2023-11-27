@@ -102,5 +102,20 @@ function test_persons() {
         echo "Reason: " . $response->getReasonPhrase() . "\n";
     }
 }
+
+function test_packet() {
+    $client = new Blueink\Client(getenv('BLUEINK_PRIVATE_API_KEY'));
+    
+    try {
+        $client->packets->retrieve_coe('cc'); 
+    } catch (GuzzleException\RequestException $e) {
+        # handle the exception
+        echo 'Got an exception';
+        $response = $e->getResponse();
+        echo "Status Code: " . $response->getStatusCode() . "\n";
+        echo "Reason: " . $response->getReasonPhrase() . "\n";
+    }
+}
 // test_bundles();
 // test_persons();
+test_packet();
