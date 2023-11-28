@@ -5,6 +5,8 @@ require_once __DIR__ ."/helpers/RequestHelper.php";
 require_once __DIR__ ."/subclients/BundleSubClient.php";
 require_once __DIR__ ."/subclients/PersonSubClient.php";
 require_once __DIR__ ."/subclients/PacketSubClient.php";
+require_once __DIR__ ."/subclients/TemplateSubClient.php";
+require_once __DIR__ ."/subclients/WebhookSubClient.php";
 use ErrorException;
 class Client
 {
@@ -14,6 +16,8 @@ class Client
 	public BundleSubClient $bundles;
 	public PersonSubClient $persons;
 	public PacketSubClient $packets;
+	public TemplateSubClient $templates;
+	public WebhookSubClient $webhooks;
 	/**
 	 * Need some description here following guzzle
 	 */
@@ -41,10 +45,12 @@ class Client
 			$this->base_url = DEFAULT_BASE_URL;
 		}
 
-		# create bundle helper
+		# create helper
 		$this->request_helper = new RequestHelper($this->private_api_key);	
 		$this->bundles = new BundleSubClient($this->base_url, $this->request_helper);
 		$this->persons = new PersonSubClient($this->base_url, $this->request_helper);
 		$this->packets = new PacketSubClient($this->private_api_key, $this->request_helper);
+		$this->templates = new TemplateSubClient($this->private_api_key, $this->request_helper);
+		$this->webhooks = new WebhookSubClient($this->private_api_key, $this->request_helper);
 	}
 }
