@@ -86,17 +86,7 @@ class BundleSubClient extends SubClient
 	 */
 	public function list(?int $page = null, ?int $per_page = null, ?bool $related_data = false, ?array $additional_data = null)
 	{	
-		$params = [];
-		if (!is_null($per_page)) {
-			$params['per_page'] = $per_page;
-		}
-		if (!is_null($page)) {
-			$params['page'] = $page;
-		}
-
-		if (!is_null($additional_data)) {
-			$params = Helper::merge_additional_data($params, $additional_data);
-		}
+		$params = parent::build_params($page, $per_page, $additional_data);
 
 		# NOTE need to check again this logic
 		$params = [

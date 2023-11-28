@@ -70,7 +70,7 @@ class PacketEndpoints
 {
 	public static function embed_url(string $packet_id)
 	{
-		return "/packets/$packet_id/embed_url";
+		return "/packets/$packet_id/embed_url/";
 	}
 	public static function update(string $packet_id)
 	{
@@ -85,32 +85,67 @@ class PacketEndpoints
 		return "/packets/$packet_id/coe/";
 	}
 }
-
-
-const TEMPLATES = array(
-	"LIST" => "/templates",
-	"RETRIEVE" => "/templates/{template_id}/",
-);
-
-const WEBHOOKS = array(
-	"CREATE" => "/webhooks/",
-	"LIST" => "/webhooks/",
-	"RETRIEVE" => "/webhooks/{webhook_id}/",
-	"UPDATE" => "/webhooks/{webhook_id}/",
-	"DELETE" => "/webhooks/{webhook_id}/",
-
-	"CREATE_HEADER" => "/webhooks/headers/",
-	"LIST_HEADER" => "/webhooks/headers/",
-	"RETRIEVE_HEADER" => "/webhooks/headers/{webhook_header_id}/",
-	"UPDATE_HEADER" => "/webhooks/headers/{webhook_header_id}/",
-	"DELETE_HEADER" => "/webhooks/headers/{webhook_header_id}/",
-
-	"LIST_EVENTS" => "/webhooks/events/",
-	"RETRIEVE_EVENT" => "/webhooks/events/{webhook_event_id}/",
-
-	"LIST_DELIVERIES" => "/webhooks/deliveries/",
-	"RETRIEVE_DELIVERY" => "/webhooks/deliveries/{webhook_delivery_id}/",
-
-	"RETRIEVE_SECRET" => "/webhooks/secret/",
-	"REGENERATE_SECRET" => "/webhooks/secret/regenerate/",
-);
+/**
+ * List all of the template endpoints
+ */
+class TemplateEndpoints {
+	public static function list() {
+		return "/templates/";
+	}
+	public static function retrieve(string $template_id) {
+		return "/templates/$template_id/";
+	}
+}
+/**
+ * List all of the webhook endpoints
+ */
+class WebhookEndpoints {
+	public static function create() {
+		return "/webhooks/";
+	}
+	public static function list() {
+		return "/webhooks/";
+	}
+	public static function retrieve(string $webhook_id) {
+		return "/webhooks/$webhook_id/";
+	}
+	public static function update(string $webhook_id) {
+		return "/webhooks/$webhook_id/";
+	}
+	public static function delete(string $webhook_id) {
+		return "/webhooks/$webhook_id/";
+	}
+	public static function create_header() {
+		return "/webhooks/headers/";
+	}
+	public static function list_headers() {
+		return "/webhooks/headers/";
+	}
+	public static function retrieve_header(string $webhook_header_id) {
+		return "/webhooks/headers/$webhook_header_id/";
+	}
+	public static function update_header(string $webhook_header_id) {
+		return "/webhooks/headers/$webhook_header_id/";
+	}
+	public static function delete_header(string $webhook_header_id) {
+		return "/webhooks/headers/$webhook_header_id/";
+	}
+	public static function list_events() {
+		return "/webhooks/events/";
+	}
+	public static function retrieve_event(string $webhook_event_id) {
+		return "/webhooks/events/$webhook_event_id/";
+	}
+	public static function list_deliveries() {
+		return "/webhooks/deliveries/";
+	}
+	public static function retrieve_delivery(string $webhook_delivery_id) {
+		return "/webhooks/deliveries/$webhook_delivery_id/";
+	}
+	public static function retrieve_secret() {
+		return "/webhooks/secret/";
+	}
+	public static function regenerate_secret() {
+		return "/webhooks/secret/regenerate/";
+	}
+}
