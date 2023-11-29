@@ -46,7 +46,7 @@ class Field
 	static function create($x, $y, $w, $h, $page, $kind, $key = null, $additional_data = null)
 	{
 		if (!$key) {
-			$key = Helper::generate_key("field", 5);
+			$key = Helper::generateKey("field", 5);
 		}
 		$params = array(
 			"key" => $key,
@@ -58,7 +58,7 @@ class Field
 			"kind" => $kind
 		);
 
-		$params = Helper::merge_additional_data($params, $additional_data);
+		$params = Helper::mergeAdditionalData($params, $additional_data);
 		$obj = new Field($params);
 
 		return $obj;
@@ -66,7 +66,7 @@ class Field
 	/**
 	 * Need some description here
 	 */
-	function kind_is_allowed($v)
+	function kindIsAllowed($v)
 	{
 		if (!in_array($v, FIELD_KIND)) {
 			return "Field Kind $v not allowed.";
@@ -77,7 +77,7 @@ class Field
 	/**
 	 * Need some description here
 	 */
-	function add_editor($editor)
+	function addEditor($editor)
 	{
 		if ($this->editors == null) {
 			$this->editors = array();
@@ -134,7 +134,7 @@ class Packet
 	 * 
 	 * @return string 
 	 */
-	function deliver_via_is_allowed(string $v)
+	function deliverViaIsAllowed(string $v)
 	{
 		if (is_null($v) && !in_array($v, DELIVER_VIA)) {
 			return "devliver_via $v not allowed.";
@@ -155,17 +155,17 @@ class Packet
 	public static function create(?string $key = null, ?string $name = null, ?array $additional_data = [])
 	{
 		if (is_null($key)) {
-			$key = Helper::generate_key("packet", 5);
+			$key = Helper::generateKey("packet", 5);
 		}
 		$params = array(
 			"key" => $key,
 			"name" => $name,
 		);
-		$params = Helper::merge_additional_data($params, $additional_data);
+		$params = Helper::mergeAdditionalData($params, $additional_data);
 
 		$obj = new Packet($params);
 
-		return Helper::remove_null_properties($obj);
+		return Helper::removeNullProperties($obj);
 	}
 }
 class TemplateRefFieldValue
@@ -189,7 +189,7 @@ class TemplateRefFieldValue
 			"key" => $key,
 			"initial_value" => $initial_value,
 		);
-		$params = Helper::merge_additional_data($params, $additional_data);
+		$params = Helper::mergeAdditionalData($params, $additional_data);
 		$obj = new TemplateRefFieldValue($params);
 
 		return $obj;
@@ -215,10 +215,10 @@ class TemplateRef
 	public static function create($key = null, array $additional_data = [])
 	{
 		if (is_null($key)) {
-			$key = Helper::generate_key('tmpl', 5);
+			$key = Helper::generateKey('tmpl', 5);
 		}
 		$params = array('key' => $key);
-		$params = Helper::merge_additional_data($params, $additional_data);
+		$params = Helper::mergeAdditionalData($params, $additional_data);
 
 		$obj = new TemplateRef($params);
 
@@ -227,7 +227,7 @@ class TemplateRef
 	/**
 	 * Need some description here
 	 */
-	public function add_assigment($assignment)
+	public function addAssignment($assignment)
 	{
 		if ($this->assignments == null) {
 			$this->assigments = array();
@@ -237,7 +237,7 @@ class TemplateRef
 	/**
 	 * Need some description here
 	 */
-	public function add_field_Value($field_value)
+	public function addFieldValue($field_value)
 	{
 		if ($this->field_values == null) {
 			$this->field_values = array();
@@ -290,13 +290,13 @@ class Document
 	public static function create(string $key = null, array $additional_data = [])
 	{
 		if (is_null($key)) {
-			$key = Helper::generate_key('doc', 5);
+			$key = Helper::generateKey('doc', 5);
 		}
 		$params = ["key" => $key];
-		$params = Helper::merge_additional_data($params, $additional_data);
+		$params = Helper::mergeAdditionalData($params, $additional_data);
 		$obj = new Document($params);
 
-		return Helper::remove_null_properties($obj);
+		return Helper::removeNullProperties($obj);
 	}
 	/**
 	 * 
@@ -306,7 +306,7 @@ class Document
 	 * 
 	 * @return void
 	 */
-	public function add_field(Field $field)
+	public function addField(Field $field)
 	{
 		if (is_null($this->fields)) {
 			$this->fields = array();
@@ -316,7 +316,7 @@ class Document
 	/**
 	 * Need some description here
 	 */
-	public function add_assignment($assignment)
+	public function addAssignment($assignment)
 	{
 		// ???
 	}
@@ -397,7 +397,7 @@ class Bundle
 			"packets" => $packets,
 			"documents" => $documents,
 		);
-		$params = Helper::merge_additional_data($params, $additional_data);
+		$params = Helper::mergeAdditionalData($params, $additional_data);
 		$obj = new Bundle($params);
 
 		return $obj;
@@ -409,7 +409,7 @@ class Bundle
 	 * 
 	 * @return void
 	 */
-	public function add_packet(Packet $packet)
+	public function addPacket(Packet $packet)
 	{
 		if (is_null($this->packets)) {
 			$this->packets = array();
@@ -423,7 +423,7 @@ class Bundle
 	 * 
 	 * @return void
 	 */
-	public function add_document(Document $document)
+	public function addDocument(Document $document)
 	{
 		if (is_null($this->documents)) {
 			$this->documents = array();

@@ -13,7 +13,7 @@ class WebhookSubClient extends SubClient {
      * @return mixed response of the request
      */
     public function create(array $data) {
-        $url = parent::build_url(WebhookEndpoints::create());
+        $url = parent::buildURL(WebhookEndpoints::create());
 
         return parent::$request->post($url, $data);
     }
@@ -27,8 +27,8 @@ class WebhookSubClient extends SubClient {
      * @return mixed response of the request
      */
     public function list(?int $page = null, ?int $per_page = null, ?array $query_params = null) {
-        $url = parent::build_url(WebhookEndpoints::list());
-        $params = parent::build_params($page, $per_page, $query_params);
+        $url = parent::buildURL(WebhookEndpoints::list());
+        $params = parent::buildParams($page, $per_page, $query_params);
 
         return parent::$request->get($url, ['params' => $params]);
     }
@@ -40,7 +40,7 @@ class WebhookSubClient extends SubClient {
      * @return mixed response of the request
      */
     public function retrieve(string $webhook_id) {
-        $url = parent::build_url(WebhookEndpoints::retrieve($webhook_id));
+        $url = parent::buildURL(WebhookEndpoints::retrieve($webhook_id));
 
         return parent::$request->get($url);
     }
@@ -52,7 +52,7 @@ class WebhookSubClient extends SubClient {
      * @return mixed response of the request
      */
     public function delete(string $webhook_id) {
-        $url = parent::build_url(WebhookEndpoints::delete($webhook_id));
+        $url = parent::buildURL(WebhookEndpoints::delete($webhook_id));
 
         return parent::$request->delete($url);       
     }
@@ -65,7 +65,7 @@ class WebhookSubClient extends SubClient {
      * @return mixed response of the request
      */
     public function update(string $webhook_id, array $data) {
-        $url = parent::build_url(WebhookEndpoints::update($webhook_id));
+        $url = parent::buildURL(WebhookEndpoints::update($webhook_id));
 
         return parent::$request->patch($url, $data);
     }
@@ -76,8 +76,8 @@ class WebhookSubClient extends SubClient {
      * 
      * @return mixed response of the request
      */
-    public function create_header(array $data) {
-        $url = parent::build_url(WebhookEndpoints::create_header());
+    public function createHeader(array $data) {
+        $url = parent::buildURL(WebhookEndpoints::createHeader());
 
         return parent::$request->post($url, $data);
     }
@@ -90,9 +90,9 @@ class WebhookSubClient extends SubClient {
      * 
      * @return mixed response of the request
      */
-    public function list_headers(?int $page = null, ?int $per_page = null, ?array $query_params = null) {
-        $url = parent::build_url(WebhookEndpoints::list_headers());
-        $params = parent::build_params($page, $per_page, $query_params);
+    public function listHeaders(?int $page = null, ?int $per_page = null, ?array $query_params = null) {
+        $url = parent::buildURL(WebhookEndpoints::listHeaders());
+        $params = parent::buildParams($page, $per_page, $query_params);
 
         return parent::$request->get($url, ['params' => $params]);
     }
@@ -103,8 +103,8 @@ class WebhookSubClient extends SubClient {
      * 
      * @return mixed response of the request
      */
-    public function retrieve_header(string $header_id) {
-        $url = parent::build_url(WebhookEndpoints::retrieve_header($header_id));
+    public function retrieveHeader(string $header_id) {
+        $url = parent::buildURL(WebhookEndpoints::retrieveHeader($header_id));
 
         return parent::$request->get($url);
     }
@@ -115,8 +115,8 @@ class WebhookSubClient extends SubClient {
      * 
      * @return mixed response of the request
      */
-    public function delete_header(string $header_id) {
-        $url = parent::build_url(WebhookEndpoints::delete_header($header_id));
+    public function deleteHeader(string $header_id) {
+        $url = parent::buildURL(WebhookEndpoints::deleteHeader($header_id));
 
         return parent::$request->delete($url);
     }
@@ -129,9 +129,9 @@ class WebhookSubClient extends SubClient {
      * 
      * @return mixed response of the request
      */
-    public function list_events(?int $page = null, ?int $per_page = null, ?array $query_params = null) {
-        $url = parent::build_url(WebhookEndpoints::list_events());
-        $params = parent::build_params($page, $per_page, $query_params);
+    public function listEvents(?int $page = null, ?int $per_page = null, ?array $query_params = null) {
+        $url = parent::buildURL(WebhookEndpoints::listEvents());
+        $params = parent::buildParams($page, $per_page, $query_params);
 
         return parent::$request->get($url, ['params' => $params]);
     }
@@ -142,8 +142,8 @@ class WebhookSubClient extends SubClient {
      * 
      * @return mixed response of the request
      */
-    public function retrieve_event(string $event_id) {
-        $url = parent::build_url(WebhookEndpoints::retrieve_event($event_id));
+    public function retrieveEvent(string $event_id) {
+        $url = parent::buildURL(WebhookEndpoints::retrieveEvent($event_id));
 
         return parent::$request->get($url);
     }
@@ -156,21 +156,21 @@ class WebhookSubClient extends SubClient {
      * 
      * @return mixed response of the request
      */
-    public function list_deliveries(?int $page = null, ?int $per_page = null, ?array $query_params = null) {
-        $url = parent::build_url(WebhookEndpoints::list_deliveries());
-        $params = parent::build_params($page, $per_page, $query_params);
+    public function listDeliveries(?int $page = null, ?int $per_page = null, ?array $query_params = null) {
+        $url = parent::buildURL(WebhookEndpoints::listDeliveries());
+        $params = parent::buildParams($page, $per_page, $query_params);
 
         return parent::$request->get($url, ['params' => $params]);
     }
     /**
-     * Retrieve_delivery
+     * retrieveDelivery
      * 
      * @param string $delivery_id: delivery ID
      * 
      * @return mixed response of the request
      */
-    public function retrieve_delivery(string $delivery_id) {
-        $url = parent::build_url(WebhookEndpoints::retrieve_delivery($delivery_id));
+    public function retrieveDelivery(string $delivery_id) {
+        $url = parent::buildURL(WebhookEndpoints::retrieveDelivery($delivery_id));
 
         return parent::$request->get($url);
     }
@@ -179,8 +179,8 @@ class WebhookSubClient extends SubClient {
      * 
      * @return mixed response of the request
      */
-    public function retrieve_secret() {
-        $url = parent::build_url(WebhookEndpoints::retrieve_secret());
+    public function retrieveSecret() {
+        $url = parent::buildURL(WebhookEndpoints::retrieveSecret());
 
         return parent::$request->get($url);
     }
@@ -189,8 +189,8 @@ class WebhookSubClient extends SubClient {
      * 
      * @return mixed response of the request
      */
-    public function regenerate_secret() {
-        $url = parent::build_url(WebhookEndpoints::regenerate_secret());
+    public function regenerateSecret() {
+        $url = parent::buildURL(WebhookEndpoints::regenerateSecret());
 
         return parent::$request->get($url);
     }

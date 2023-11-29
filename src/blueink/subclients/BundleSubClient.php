@@ -13,7 +13,7 @@ class BundleSubClient extends SubClient
 	 * prepare file before create bundle
 	 * 
 	 */
-	private function prepare_files(mixed $files)
+	private function prepareFiles(mixed $files)
 	{
 
 		return [];
@@ -32,11 +32,11 @@ class BundleSubClient extends SubClient
 			throw new \ErrorException("Data is required");
 		}
 
-		$url = parent::build_url(BundleEndpoints::create());
+		$url = parent::buildURL(BundleEndpoints::create());
 		if (is_null($file)) {
 			$response = parent::$request->post($url, $data);
 		} else {
-			$files_data = $this->prepare_files($file);
+			$files_data = $this->prepareFiles($file);
 			if (is_null($files_data)) {
 				throw new \ErrorException('No valid file data provided');
 			}
@@ -55,9 +55,9 @@ class BundleSubClient extends SubClient
 	 * 
 	 * @return mixed Bundle object
 	 */
-	public function create_from_bundle_helper(array $data) 
+	public function createFromBundleHelper(array $data) 
 	{
-		return $this->create(['body' => BundleHelper::as_data($data)]);
+		return $this->create(['body' => BundleHelper::asData($data)]);
 	}
 	# TODO paginated function
 	/**
@@ -70,7 +70,7 @@ class BundleSubClient extends SubClient
 	 * 
 	 * @return mixed Paginated object
 	 */
-	public function paged_list(?int $page = 1, ?int $per_page = 50, ?bool $related_data = false, ?array $query_params = null) {
+	public function pagedList(?int $page = 1, ?int $per_page = 50, ?bool $related_data = false, ?array $query_params = null) {
 		
 		return ;
 	}
@@ -86,14 +86,14 @@ class BundleSubClient extends SubClient
 	 */
 	public function list(?int $page = null, ?int $per_page = null, ?bool $related_data = false, ?array $additional_data = null)
 	{	
-		$params = parent::build_params($page, $per_page, $additional_data);
+		$params = parent::buildParams($page, $per_page, $additional_data);
 
 		# NOTE need to check again this logic
 		$params = [
 			'data' => $related_data,
 			'params' => $params
 		];
-		$url = parent::build_url(BundleEndpoints::list());
+		$url = parent::buildURL(BundleEndpoints::list());
 		$response = parent::$request->get($url, ['params' => $params]);
 
 		return $response;
@@ -108,7 +108,7 @@ class BundleSubClient extends SubClient
 	 */
 	public function retrieve(string $bundle_id, bool $related_data = false)
 	{
-		$url = parent::build_url(BundleEndpoints::retrieve($bundle_id));
+		$url = parent::buildURL(BundleEndpoints::retrieve($bundle_id));
 		$response = parent::$request->get($url, ['params' => $related_data]);
 
 		return $response;
@@ -121,7 +121,7 @@ class BundleSubClient extends SubClient
 	 * @return mixed response of request
 	 */
 	public function cancel(string $bundle_id) {
-		$url = parent::build_url(BundleEndpoints::cancel($bundle_id));
+		$url = parent::buildURL(BundleEndpoints::cancel($bundle_id));
 		
 		return parent::$request->put($url);
 	}
@@ -132,8 +132,8 @@ class BundleSubClient extends SubClient
 	 * 
 	 * @return mixed
 	 */
-	private function list_events(string $bundle_id) {
-		$url = parent::build_url(BundleEndpoints::list_events($bundle_id));
+	private function listEvents(string $bundle_id) {
+		$url = parent::buildURL(BundleEndpoints::listEvents($bundle_id));
 
 		return parent::$request->get($url);
 	}
@@ -144,8 +144,8 @@ class BundleSubClient extends SubClient
 	 * 
 	 * @return mixed
 	 */
-	private function list_files(string $bundle_id) {
-		$url = parent::build_url(BundleEndpoints::list_files($bundle_id));
+	private function listFiles(string $bundle_id) {
+		$url = parent::buildURL(BundleEndpoints::listFiles($bundle_id));
 
 		return parent::$request->get($url);
 	}
@@ -156,8 +156,8 @@ class BundleSubClient extends SubClient
 	 * 
 	 * @return mixed
 	 */
-	private function list_data(string $bundle_id) {
-		$url = parent::build_url(BundleEndpoints::list_data($bundle_id));
+	private function listData(string $bundle_id) {
+		$url = parent::buildURL(BundleEndpoints::listData($bundle_id));
 
 		return parent::$request->get($url);
 	}
@@ -169,19 +169,19 @@ class BundleSubClient extends SubClient
 	 * 
 	 * @return void
 	 */
-	public function _attach_additional_data(array $bundle) {
+	public function _attachAdditionalData(array $bundle) {
 		if (is_array($bundle) && isset($bundle['id'])) {
 			$bundle_id = $bundle['id'];
 		}
 		
-		$events_reponse = $this->list_events($bundle_id);
+		$events_reponse = $this->listEvents($bundle_id);
 		if ($events_reponse['status'] == 200) {
 			$bundle['events'] = $events_reponse['data'];
 		}
 		if ($bundle['status'] == BUNDLE_STATUS['COMPLETE']) {
-			$file_response = $this->list_files($bundle_id);
+			$file_response = $this->listFiles($bundle_id);
 			$bundle['$files'] = $file_response['data'];
-			$data_response = $this->list_data($bundle_id);
+			$data_response = $this->listData($bundle_id);
 			$bundle['data'] = $data_response['data'];
 		}
 	}

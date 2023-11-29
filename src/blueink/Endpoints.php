@@ -24,15 +24,15 @@ class BundleEndpoints
 	{
 		return "/bundles/$bundle_id/cancel/";
 	}
-	public static function list_events(string $bundle_id)
+	public static function listEvents(string $bundle_id)
 	{
 		return "/bundles/$bundle_id/events/";
 	}
-	public static function list_files(string $bundle_id)
+	public static function listFiles(string $bundle_id)
 	{
 		return "/bundles/$bundle_id/files/";
 	}
-	public static function list_data(string $bundle_id)
+	public static function listData(string $bundle_id)
 	{
 		return "/bundles/$bundle_id/data/";
 	}
@@ -68,9 +68,9 @@ class PersonEndpoints
  */
 class PacketEndpoints
 {
-	public static function embed_url(string $packet_id)
+	public static function embedURL(string $packet_id)
 	{
-		return "/packets/$packet_id/embed_url/";
+		return "/packets/$packet_id/embedURL/";
 	}
 	public static function update(string $packet_id)
 	{
@@ -80,7 +80,7 @@ class PacketEndpoints
 	{
 		return "/packets/$packet_id/remind/";
 	}
-	public static function retrieve_coe(string $packet_id)
+	public static function retrieveCOE(string $packet_id)
 	{
 		return "/packets/$packet_id/coe/";
 	}
@@ -115,37 +115,37 @@ class WebhookEndpoints {
 	public static function delete(string $webhook_id) {
 		return "/webhooks/$webhook_id/";
 	}
-	public static function create_header() {
+	public static function createHeader() {
 		return "/webhooks/headers/";
 	}
-	public static function list_headers() {
+	public static function listHeaders() {
 		return "/webhooks/headers/";
 	}
-	public static function retrieve_header(string $webhook_header_id) {
+	public static function retrieveHeader(string $webhook_header_id) {
 		return "/webhooks/headers/$webhook_header_id/";
 	}
 	public static function update_header(string $webhook_header_id) {
 		return "/webhooks/headers/$webhook_header_id/";
 	}
-	public static function delete_header(string $webhook_header_id) {
+	public static function deleteHeader(string $webhook_header_id) {
 		return "/webhooks/headers/$webhook_header_id/";
 	}
-	public static function list_events() {
+	public static function listEvents() {
 		return "/webhooks/events/";
 	}
-	public static function retrieve_event(string $webhook_event_id) {
+	public static function retrieveEvent(string $webhook_event_id) {
 		return "/webhooks/events/$webhook_event_id/";
 	}
-	public static function list_deliveries() {
+	public static function listDeliveries() {
 		return "/webhooks/deliveries/";
 	}
-	public static function retrieve_delivery(string $webhook_delivery_id) {
+	public static function retrieveDelivery(string $webhook_delivery_id) {
 		return "/webhooks/deliveries/$webhook_delivery_id/";
 	}
-	public static function retrieve_secret() {
+	public static function retrieveSecret() {
 		return "/webhooks/secret/";
 	}
-	public static function regenerate_secret() {
+	public static function regenerateSecret() {
 		return "/webhooks/secret/regenerate/";
 	}
 }

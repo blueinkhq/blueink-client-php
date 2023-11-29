@@ -24,7 +24,7 @@ class PersonHelper
 	 * 
 	 * @return void
 	 */
-	public function add_phone(string $phone)
+	public function addPhone(string $phone)
 	{
 		$this->phones[] = $phone;
 	}
@@ -35,7 +35,7 @@ class PersonHelper
 	 * 
 	 * @return void
 	 */
-	public function set_phones(array $phones)
+	public function setPhones(array $phones)
 	{
 		$this->phones = $phones;
 	}
@@ -44,7 +44,7 @@ class PersonHelper
 	 * 
 	 * @return array array of string
 	 */
-	public function get_phones()
+	public function getPhones()
 	{
 		return $this->phones;
 	}
@@ -55,7 +55,7 @@ class PersonHelper
 	 * 
 	 * @return void
 	 */
-	public function add_email(string $email)
+	public function addEmail(string $email)
 	{
 		$this->emails[] = $email;
 	}
@@ -66,7 +66,7 @@ class PersonHelper
 	 * 
 	 * @return void
 	 */
-	public function set_emails(array $emails)
+	public function setEmails(array $emails)
 	{
 		$this->emails = $emails;
 	}
@@ -75,7 +75,7 @@ class PersonHelper
 	 * 
 	 * @return array array of string
 	 */
-	public function get_emails()
+	public function getEmails()
 	{
 		return $this->emails;
 	}
@@ -86,7 +86,7 @@ class PersonHelper
 	 * 
 	 * @return void
 	 */
-	public function set_metadata(array $metadata)
+	public function setMetadata(array $metadata)
 	{
 		$this->metadata = $metadata;
 	}
@@ -109,7 +109,7 @@ class PersonHelper
 	 * 
 	 * @return array array of person helper as [key => value]
 	 */
-	public function as_array(?array $additional_data = null)
+	public function asArray(?array $additional_data = null)
 	{
 		$channels = array();
 		foreach (self::$emails as $email) {  
@@ -126,7 +126,7 @@ class PersonHelper
 		];
 
 		if (!is_null($additional_data)) {
-			$data = Helper::merge_additional_data($data, $additional_data);
+			$data = Helper::mergeAdditionalData($data, $additional_data);
 		}
 
 		return $data;

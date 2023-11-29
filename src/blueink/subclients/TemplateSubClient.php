@@ -13,7 +13,7 @@ class TemplateSubClient extends SubClient {
      * 
      * @return mixed paginated object
      */
-    public function paged_list() {
+    public function pagedList() {
 
         return ;
     }
@@ -27,8 +27,8 @@ class TemplateSubClient extends SubClient {
      * @return mixed list of template
      */
     public function list(?int $page = null, ?int $per_page = null, ?array $query_params = null) {
-        $url = parent::build_url(TemplateEndpoints::list());
-        $params = parent::build_params($page, $per_page, $query_params);
+        $url = parent::buildURL(TemplateEndpoints::list());
+        $params = parent::buildParams($page, $per_page, $query_params);
 
         return parent::$request->get($url, ['params' => $params]);
     }
@@ -40,7 +40,7 @@ class TemplateSubClient extends SubClient {
      * @return mixed response of the request
      */
     public function retrieve(string $template_id) {
-        $url = parent::build_url(TemplateEndpoints::retrieve($template_id));
+        $url = parent::buildURL(TemplateEndpoints::retrieve($template_id));
 
         return parent::$request->get($url);
     }

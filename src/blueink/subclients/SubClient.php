@@ -23,7 +23,7 @@ class SubClient
 	 * 
 	 * @return RequestHelper Request Helper object
 	 */
-	public function get_request()
+	public function getRequest()
 	{
 		return $this->request;
 	}
@@ -36,7 +36,7 @@ class SubClient
 	 * 
 	 * @return array array of query params
 	 */
-	public static function build_params(?int $page = null, ?int $per_page = null, ?array $additional_params = null)
+	public static function buildParams(?int $page = null, ?int $per_page = null, ?array $additional_params = null)
 	{
 		$params = $additional_params;
 
@@ -58,7 +58,7 @@ class SubClient
 	 * 
 	 * @return string url
 	 */
-	public static function build_url(string $endpoint, ?array $additional_data = null)
+	public static function buildURL(string $endpoint, ?array $additional_data = null)
 	{
 		if (is_null($additional_data)) {
 			return DEFAULT_BASE_URL.$endpoint;

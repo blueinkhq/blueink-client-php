@@ -64,7 +64,7 @@ class BundleHelper
 	 * 
 	 * @return void
 	 */
-	public function add_cc($email)
+	public function addCC($email)
 	{
 		$this->cc_emails[] = $email;
 	}
@@ -76,7 +76,7 @@ class BundleHelper
 	 * 
 	 * @return string $document->key: return an document key
 	 */
-	public function add_document_by_url(string $url = '', array $additional_data = [])
+	public function addDocumentByURL(string $url = '', array $additional_data = [])
 	{
 		$document = Document::create(null, array('file_url' => $url));
 		$this->documents[$document->key] = $document;
@@ -93,7 +93,7 @@ class BundleHelper
 	 * 
 	 * @return string Document key
 	 */
-	public function add_document_by_b64(string $filename, string $b64str, array $additional_data = [])
+	public function addDocumentByB64(string $filename, string $b64str, array $additional_data = [])
 	{
 		$document = Document::create(null, array('filename' => $filename, 'file_b64' => $b64str, 'additional_data' => $additional_data));
 		$this->documents[$document->key] = $document;
@@ -109,13 +109,13 @@ class BundleHelper
 	 * @return string Document key
 	 * 
 	 */
-	public function add_document_by_path(string $file_path, array $additional_data = [])
+	public function addDocumentByPath(string $file_path, array $additional_data = [])
 	{
 		$file_name = basename($file_path);
 		$file_content = file_get_contents($file_path);
 		$b64 = base64_encode(utf8_decode($file_content));
 
-		return BundleHelper::add_document_by_b64($file_name, $b64, $additional_data);
+		return BundleHelper::addDocumentByB64($file_name, $b64, $additional_data);
 	}
 	/**
 	 * Add a file using a file path. File context used, should safely open/close file
@@ -125,13 +125,13 @@ class BundleHelper
 	 * 
 	 * @return string Document key
 	 */
-	public function add_document_by_file(mixed $file, array $additional_data = [])
+	public function addDocumentByFile(mixed $file, array $additional_data = [])
 	{
 		$file_name = basename($file);
 		$file_content = file_get_contents($file_name);
 		$b64 = base64_encode(utf8_decode($file_content));
 
-		return BundleHelper::add_document_by_b64($file_name, $b64, $additional_data);
+		return BundleHelper::addDocumentByB64($file_name, $b64, $additional_data);
 	}
 	/**
 	 * Add document by template
@@ -140,7 +140,7 @@ class BundleHelper
 	 * @param array $assignments: array of string
 	 * @param array $initial_field_values
 	 */
-	public function add_document_template(string $template_id, array $assignments, array $initial_field_values)
+	public function addDocumentTemplate(string $template_id, array $assignments, array $initial_field_values)
 	{
 
 	}
@@ -151,7 +151,7 @@ class BundleHelper
 	 * 
 	 * @return Bundle bundle object
 	 */
-	public static function as_data(array $data)
+	public static function asData(array $data)
 	{
 		$packets = self::$packets;
 		$documents = self::$documents;

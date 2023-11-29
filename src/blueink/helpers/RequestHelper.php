@@ -29,7 +29,7 @@ class Pagination
 		$this->per_page = (int) $header_array[2];
 		$this->total_results = (int) $header_array[3];
 	}
-	public function pagination_as_string()
+	public function paginationAsString()
 	{
 		return "page_number: " . $this->page_number . ", per_page:" . $this->per_page
 			. ", total_pages:" . $this->total_pages . ", total_results: " . $this->total_results;
@@ -56,7 +56,7 @@ class RequestHelper
 	 */
 	public function get(string $url, ?array $additional_data = null)
 	{
-		return $this->make_request('GET', $url, $additional_data);
+		return $this->makeRequest('GET', $url, $additional_data);
 	}
 	/**
 	 * POST request
@@ -69,7 +69,7 @@ class RequestHelper
 	 */
 	public function post(string $url, ?array $additional_data = null)
 	{
-		return $this->make_request('POST', $url, $additional_data);
+		return $this->makeRequest('POST', $url, $additional_data);
 	}
 	/**
 	 * PUT request
@@ -82,7 +82,7 @@ class RequestHelper
 	 */
 	public function put(string $url, ?array $additional_data = null)
 	{
-		return $this->make_request('PUT', $url, $additional_data);
+		return $this->makeRequest('PUT', $url, $additional_data);
 	}
 	/**
 	 * PATCH request
@@ -95,7 +95,7 @@ class RequestHelper
 	 */
 	public function patch(string $url, ?array $additional_data = null)
 	{
-		return $this->make_request('PATCH', $url, $additional_data);
+		return $this->makeRequest('PATCH', $url, $additional_data);
 	}
 	/**
 	 * DELETE request
@@ -108,7 +108,7 @@ class RequestHelper
 	 */
 	public function delete(string $url, ?array $additional_data = null)
 	{
-		return $this->make_request('DELETE', $url, $additional_data);
+		return $this->makeRequest('DELETE', $url, $additional_data);
 	}
 	/**
 	 * making request from method, url and data
@@ -120,7 +120,7 @@ class RequestHelper
 	 * 
 	 * @return mixed response of the request
 	 */
-	private function make_request(string $method, string $url, ?array $additional_params = [])
+	private function makeRequest(string $method, string $url, ?array $additional_params = [])
 	{
 		$params = $additional_params['params'] ?? null;
 		$data = $additional_params['data'] ?? null;
@@ -131,14 +131,14 @@ class RequestHelper
 		if (is_null($body)) {
 			$body = $additional_params['body'] ?? null;
 			if (!is_array($body)) {
-				$body = Helper::remove_null_properties($body) ?? null;
+				$body = Helper::removeNullProperties($body) ?? null;
 			}
 			
 			$body = json_encode($body);
 		}
 		
 		$headers = $additional_params['headers'] ?? null;
-		$headers = $this->build_header($content_type, $headers);
+		$headers = $this->buildHeader($content_type, $headers);
 
 		$http = new Client([
 			'headers' => $headers,
@@ -165,7 +165,7 @@ class RequestHelper
 	 * 
 	 * @return array $content_type
 	 */
-	private function build_header(?string $content_type = null, ?array $more_headers = null)
+	private function buildHeader(?string $content_type = null, ?array $more_headers = null)
 	{
 		if (is_null($this->private_api_key)) {
 			throw new ErrorException('Private API key must be supplied');
@@ -176,7 +176,7 @@ class RequestHelper
 		if (!is_null($content_type))
 			$headers['Content-Type'] = $content_type;
 		if (!is_null($more_headers)) {
-			$headers = Helper::merge_additional_data($headers, $more_headers);
+			$headers = Helper::mergeAdditionalData($headers, $more_headers);
 		}
 
 		return $headers;

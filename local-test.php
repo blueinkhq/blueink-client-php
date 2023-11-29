@@ -110,7 +110,7 @@ function test_packet()
     $client = new Blueink\Client(getenv('BLUEINK_PRIVATE_API_KEY'));
 
     try {
-        $client->packets->retrieve_coe('cc');
+        $client->packets->retrieveCOE('cc');
     } catch (GuzzleException\RequestException $e) {
         # handle the exception
         echo 'Got an exception';
@@ -146,8 +146,8 @@ function test_webhook()
         "json": true
     }';
     $header_data = '{
-        "id": "4d4aa39c-028a-8409-7c53-4a91fd9a7eb2",
-        "webhook": "58a68c1b-e56e-54a2-7677-c7dc928ce8c6",
+        "id": "ccc",
+        "webhook": "1227d2d9-f0ae-4eee-b913-16cc9c809aeb",
         "name": "deserunt",
         "value": "minim deserunt cillum sint",
         "order": 1
@@ -157,10 +157,16 @@ function test_webhook()
         $client->webhooks->list();
         $client->webhooks->retrieve($webhook['id']);
         $client->webhooks->delete($webhook['id']);
-        $header = $client->webhooks->create_header(['json' => $header_data]);
-        $client->webhooks->list_headers();
-        $client->webhooks->retrieve_header($header['id']);
-        $client->webhooks->delete_header($header['id']);
+        $header = $client->webhooks->createHeader(['json' => $header_data]);
+        $client->webhooks->listHeaders();
+        $client->webhooks->retrieveHeader($header['id']);
+        $client->webhooks->deleteHeader($header['id']);
+        $client->webhooks->listEvents();
+        $client->webhooks->retrieveEvent('cc');
+        $client->webhooks->listDeliveries();
+        $client->webhooks->retrieveDelivery('cc');
+        $client->webhooks->retrieveSecret();
+        $client->webhooks->regenerateSecret();
     } catch (GuzzleException\RequestException $e) {
         # handle the exception
         echo 'Got an exception';

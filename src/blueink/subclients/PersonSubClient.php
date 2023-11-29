@@ -19,9 +19,9 @@ class PersonSubClient extends SubClient
             throw new \ErrorException("A name is required to create a person");
         }
         if (!is_null($additional_data)) {
-            $data = Helper::merge_additional_data($data, $additional_data);
+            $data = Helper::mergeAdditionalData($data, $additional_data);
         }
-        $url = parent::build_url(PersonEndpoints::create());
+        $url = parent::buildURL(PersonEndpoints::create());
 
         return parent::$request->post($url, $data);
     }
@@ -32,12 +32,12 @@ class PersonSubClient extends SubClient
      * 
      * @return mixed Person object
      */
-    public function create_from_person_helper(PersonHelper $person_helper, ?array $additional_data = null)
+    public function createFromPersonHelper(PersonHelper $person_helper, ?array $additional_data = null)
     {
-        $data = $person_helper->as_array($additional_data);
+        $data = $person_helper->asArray($additional_data);
         return $this->create(['body' => $data]);
     }
-    # TODO need to test the paged_list from bundle helper first
+    # TODO need to test the pagedList from bundle helper first
     /**
      * Return an iterable object such that you may laizly fetch a number of person
      * 
@@ -47,7 +47,7 @@ class PersonSubClient extends SubClient
      * 
      * @return mixed Paginated Iterator object
      */
-    public function paged_list(?int $page = 1, ?int $per_page = 50, ?array $additional_data = null)
+    public function pagedList(?int $page = 1, ?int $per_page = 50, ?array $additional_data = null)
     {
 
         return ;
@@ -72,10 +72,10 @@ class PersonSubClient extends SubClient
         }
 
         if (!is_null($additional_data)) {
-            $params = Helper::merge_additional_data($params, $additional_data);
+            $params = Helper::mergeAdditionalData($params, $additional_data);
         }
 
-        $url = parent::build_url(PersonEndpoints::list());
+        $url = parent::buildURL(PersonEndpoints::list());
         $response = parent::$request->get($url, ['params' => $params]);
 
         return $response;
@@ -89,7 +89,7 @@ class PersonSubClient extends SubClient
      */
     public function retrieve(string $person_id)
     {
-        $url = parent::build_url(PersonEndpoints::retrieve($person_id));
+        $url = parent::buildURL(PersonEndpoints::retrieve($person_id));
 
         return parent::$request->get($url);
     }
@@ -104,7 +104,7 @@ class PersonSubClient extends SubClient
      */
     public function update(string $person_id, array $data, ?bool $partial = false)
     {
-        $url = parent::build_url(PersonEndpoints::update($person_id));
+        $url = parent::buildURL(PersonEndpoints::update($person_id));
         if ($partial) {
             $response = parent::$request->patch($url, $data);
         } else {
@@ -121,7 +121,7 @@ class PersonSubClient extends SubClient
      * @return mixed # NOTE description for return here
      */
     public function delete(string $person_id) {
-        $url = parent::build_url(PersonEndpoints::delete($person_id));
+        $url = parent::buildURL(PersonEndpoints::delete($person_id));
 
         return parent::$request->delete($url);
     }

@@ -11,7 +11,7 @@ class Helper
 	 * 
 	 * @return string $key
 	 */
-	public static function generate_key(string $type, int $length = 5)
+	public static function generateKey(string $type, int $length = 5)
 	{
 		$ascii_lowercase = 'abcdefghijklmnopqrstuvwxyz';
 		$ascii_uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -28,7 +28,7 @@ class Helper
 	 * 
 	 * @return array array after merge
 	 */
-	public static function merge_additional_data(?array $data = [], ?array $additional_data = [])
+	public static function mergeAdditionalData(?array $data = [], ?array $additional_data = [])
 	{
 		if (!is_array($data) || !is_array($additional_data))
 			throw new \ErrorException("Merge Error! Data is not array \n\n");
@@ -46,7 +46,7 @@ class Helper
 	 * 
 	 * @return mixed Object after remove null properties
 	 */
-	public static function remove_null_properties(?object $object) {
+	public static function removeNullProperties(?object $object) {
 		if (is_null($object) && !is_object($object)) {
 			return null;
 		}

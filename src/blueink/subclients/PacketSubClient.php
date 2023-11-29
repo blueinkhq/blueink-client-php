@@ -12,7 +12,7 @@
          * @return mixed response patch request
          */
         public function update(string $packet_id, array $data) {
-            $url = parent::build_url(PacketEndpoints::UPDATE($packet_id));
+            $url = parent::buildURL(PacketEndpoints::UPDATE($packet_id));
             
             return parent::$request->patch($url, $data);
         }
@@ -23,8 +23,8 @@
          * 
          * @return mixed response of the request
          */
-        public function embed_url(string $packet_id) {
-            $url = parent::build_url(PacketEndpoints::EMBED_URL($packet_id));
+        public function embedURL(string $packet_id) {
+            $url = parent::buildURL(PacketEndpoints::embedURL($packet_id));
 
             return parent::$request->post($url);
         }
@@ -35,8 +35,8 @@
          * 
          * @return mixed response of the request
          */
-        public function retrieve_coe(string $packet_id) {
-            $url = parent::build_url(PacketEndpoints::RETRIEVE_COE($packet_id));
+        public function retrieveCOE(string $packet_id) {
+            $url = parent::buildURL(PacketEndpoints::retrieveCOE($packet_id));
 
             return parent::$request->get($url);
         }
@@ -48,7 +48,7 @@
          * @return mixed response of the request
          */
         public function remind(string $packet_id) {
-            $url = parent::build_url(PacketEndpoints::REMIND($packet_id));
+            $url = parent::buildURL(PacketEndpoints::REMIND($packet_id));
 
             return parent::$request->post($url);
         }
