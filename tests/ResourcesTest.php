@@ -2,7 +2,6 @@
 /**
  */
 
-
 use BlueInk\ApiClient\BundleResource;
 use BlueInk\ApiClient\Client;
 use Snorlax\RestClient;
