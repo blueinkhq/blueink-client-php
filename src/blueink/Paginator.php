@@ -1,5 +1,6 @@
 <?php
 namespace Blueink\ClientSDK;
+
 # TODO need class description
 class Paginated {
     public mixed $paged_function;

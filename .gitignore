@@ -1,6 +1,7 @@
 # PhpStorm
 .idea/
 .DS_Store
+.phpunit.cache/
 
 # Composer
 composer.phar

@@ -7,7 +7,7 @@ require_once __DIR__ ."/subclients/PersonSubClient.php";
 require_once __DIR__ ."/subclients/PacketSubClient.php";
 require_once __DIR__ ."/subclients/TemplateSubClient.php";
 require_once __DIR__ ."/subclients/WebhookSubClient.php";
-use ErrorException;
+
 class Client
 {
 	private $private_api_key;
@@ -21,7 +21,7 @@ class Client
 	/**
 	 * Need some description here following guzzle
 	 */
-	function __construct(string $private_api_key = null, ?string $base_url = null)
+	function __construct(?string $private_api_key = null, ?string $base_url = null)
 	{
 		$this->private_api_key = $private_api_key;
 		$this->base_url = $base_url;
@@ -31,8 +31,8 @@ class Client
 			$this->private_api_key = getenv("BLUEINK_PRIVATE_API_KEY");
 		}
 
-		if (is_null($this->private_api_key)) {
-			throw new ErrorException("A Blueink Private API Key must be provided on Client initialization 
+		if (!$this->private_api_key) {
+			throw new \InvalidArgumentException("A Blueink Private API Key must be provided on Client initialization 
 			or specified via the environment variable");
 		}
 		
@@ -41,7 +41,7 @@ class Client
 			$this->base_url = getenv("BLUEINK_API_URL");
 		}
 
-		if (is_null($this->base_url)) {
+		if (!$this->base_url) {
 			$this->base_url = DEFAULT_BASE_URL;
 		}
 
