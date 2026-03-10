@@ -10,7 +10,7 @@ class PersonHelper
 	public ?array $metadata;
 	public ?array $phones;
 	public ?array $emails;
-	public function __contruct(?array $params = null)
+	public function __construct(?array $params = null)
 	{
 		$this->name = $params["name"] ?? null;
 		$this->metadata = $params["metadata"] ?? null;
