@@ -69,7 +69,7 @@ class RequestHelper
 			$response = $client->request($method, $url, $guzzle_options);
 		} catch (BadResponseException $e) {
 			if ($this->raise_exceptions) {
-				throw $e;
+				throw BlueinkApiError::fromBadResponseException($e);
 			}
 			$response = $e->getResponse();
 		}

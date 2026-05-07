@@ -327,9 +327,8 @@ foreach ($client->bundles->pagedList(per_page: 100) as $page) {
 
 ## Error handling
 
-By default 4XX/5XX responses raise the corresponding Guzzle exception
-(`GuzzleHttp\Exception\ClientException`, `ServerException`, `ConnectException`,
-etc.). The Blueink API returns a structured error body:
+By default, 4XX/5XX responses raise a `Blueink\ClientSDK\BlueinkApiError`,
+a typed exception that parses the Blueink error body shape:
 
 ```json
 {
@@ -342,17 +341,31 @@ etc.). The Blueink API returns a structured error body:
 ```
 
 ```php
-use GuzzleHttp\Exception\BadResponseException;
+use Blueink\ClientSDK\BlueinkApiError;
 
 try {
     $client->persons->create(['name' => 'Jane Doe']);
-} catch (BadResponseException $e) {
-    $body = json_decode((string) $e->getResponse()->getBody(), true);
-    foreach ($body['errors'] ?? [] as $error) {
-        printf("%s: %s\n", $error['field'], $error['message']);
+} catch (BlueinkApiError $e) {
+    $e->status_code;   // int    HTTP status (also $e->getCode())
+    $e->detail;        // ?string body.detail
+    $e->api_code;      // ?string body.code (named api_code to avoid clashing with getCode())
+    $e->errors;        // array<int,array{field?:string,message?:string}>
+    $e->body;          // decoded body (array) or raw string when not JSON
+    $e->response;      // ?Psr\Http\Message\ResponseInterface
+    $e->request;       // ?Psr\Http\Message\RequestInterface
+    $e->getPrevious(); // GuzzleHttp\Exception\BadResponseException
+
+    foreach ($e->errors as $error) {
+        printf("%s: %s\n", $error['field'] ?? '_', $error['message'] ?? '');
     }
 }
 ```
+
+`BlueinkApiError` extends `\RuntimeException`, so a generic `catch (\Throwable $e)`
+still works. The original Guzzle `BadResponseException` (`ClientException` /
+`ServerException`) is preserved as the previous exception. Network-level
+failures (`GuzzleHttp\Exception\ConnectException`, `RequestException` without a
+response) are not wrapped and continue to bubble up unchanged.
 
 To inspect failures without try/catch, construct the client with
 `raise_exceptions: false`. 4XX and 5XX responses then come back as
