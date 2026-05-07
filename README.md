@@ -80,6 +80,7 @@ The `Client` exposes one property per resource:
 | `$client->persons`   | `PersonSubClient`   | Persons (signers / contacts) |
 | `$client->packets`   | `PacketSubClient`   | Packets (per-recipient) |
 | `$client->templates` | `TemplateSubClient` | Document templates |
+| `$client->envelope_templates` | `EnvelopeTemplateSubClient` | Envelope templates |
 | `$client->webhooks`  | `WebhookSubClient`  | Webhooks, headers, events, deliveries |
 
 ### Bundles
@@ -105,30 +106,80 @@ $response = $client->bundles->create([
 $bundle_id = $response->data['id'];
 ```
 
-Or use `BundleHelper` to assemble it:
+Or use `BundleHelper` to assemble it. The helper exposes convenience methods
+for adding signers, documents, fields, and auto-placements without hand-rolling
+the nested payload:
 
 ```php
 use Blueink\ClientSDK\BundleHelper;
 
 $bundle = new BundleHelper([
-    'label'   => 'A Test Bundle',
-    'is_test' => true,
+    'label'         => 'A Test Bundle',
+    'email_subject' => 'Please sign this test bundle',
+    'is_test'       => true,
 ]);
 
-// Add a Document by URL, base64, file path (read at build time), or
-// file path (streamed as multipart at request time).
-$doc_key = $bundle->addDocumentByURL('https://example.com/contract.pdf');
-$bundle->addDocumentByPath('/tmp/nda.pdf');
-$bundle->addDocumentByFile('/tmp/large.pdf', 'application/pdf');
+// Add signers (each requires email or phone). Returns the generated packet key.
+$signer1 = $bundle->addSigner(name: 'Peter Gibbons', email: 'peter@example.com');
+$signer2 = $bundle->addSigner(name: 'Bill Lumbergh', email: 'bill@example.com');
 
-// Add a Document built from an existing Template.
-$bundle->addDocumentTemplate('tmpl_abc123');
+// Add a Document by URL, base64, file path (read at build time), file path
+// (streamed as multipart at request time), or raw HTML.
+$doc_key = $bundle->addDocumentByURL('https://example.com/contract.pdf');
+// $bundle->addDocumentByPath('/tmp/nda.pdf');
+// $bundle->addDocumentByFile('/tmp/large.pdf', 'application/pdf');
+// $bundle->addDocumentByHTML('<h1>Statement of Work</h1>...');
+
+// Add a field at fixed coordinates, scoped to a list of editor packet keys.
+$bundle->addField(
+    document_key: $doc_key,
+    x: 1, y: 15, w: 60, h: 6, p: 1,
+    kind: 'inp',
+    editors: [$signer1, $signer2],
+    label: 'Full name',
+);
+
+// Or let the API auto-place a field by searching the document text.
+$bundle->addAutoPlacement(
+    document_key: $doc_key,
+    kind: 'sig',
+    search: 'Signature:',
+    w: 30, h: 6,
+    offset_x: 8, offset_y: -1,
+    editors: [$signer1],
+);
 
 $response = $client->bundles->createFromBundleHelper($bundle);
 ```
 
 When the helper has files queued via `addDocumentByFile()`, the SDK transparently
 switches the request to `multipart/form-data`.
+
+#### Building a Bundle from a document Template
+
+`addDocumentTemplate()` adds a Document backed by an existing template, with
+optional role assignments and initial field values. `assignRole()` and
+`setValue()` append to the same Document after the fact:
+
+```php
+$signer = $bundle->addSigner(
+    name: 'Peter Gibbons',
+    email: 'peter@example.com',
+    key: 'signer-1',
+);
+
+$tmpl_key = $bundle->addDocumentTemplate(
+    template_id: 'tmpl_abc123',
+    assignments: ['signer' => 'signer-1'],          // role => signer key
+    initial_field_values: ['agree' => true],        // field key => value
+);
+
+// Equivalent, post-hoc:
+$bundle->assignRole($tmpl_key, 'signer-1', 'witness');
+$bundle->setValue($tmpl_key, 'effective_date', '2026-01-01');
+
+$response = $client->bundles->createFromBundleHelper($bundle);
+```
 
 Other Bundle operations:
 
@@ -176,6 +227,47 @@ $client->packets->remind($packet_id);
 $client->templates->list();
 $client->templates->retrieve($template_id);
 ```
+
+### Envelope Templates
+
+Envelope templates are reusable, end-to-end Bundle workflows configured in
+the Blueink dashboard. The subclient is read-only:
+
+```php
+$client->envelope_templates->list();
+$client->envelope_templates->retrieve($envelope_template_id);
+
+foreach ($client->envelope_templates->pagedList(per_page: 100) as $page) {
+    foreach ($page->data as $tpl) {
+        echo $tpl['id'] . "\n";
+    }
+}
+```
+
+To create a Bundle from an envelope template, configure a `BundleHelper` with
+`setEnvelopeTemplate()` (plus any signers and field overrides) and post it via
+`createFromEnvelopeTemplateHelper()`:
+
+```php
+use Blueink\ClientSDK\BundleHelper;
+
+$bundle = new BundleHelper([
+    'label'   => 'Onboarding paperwork',
+    'is_test' => true,
+]);
+$bundle->addSigner(name: 'Peter Gibbons', email: 'peter@example.com', key: 'signer-1');
+
+$bundle->setEnvelopeTemplate(
+    template_id: 'env_tmpl_abc123',
+    field_values: ['company_name' => 'ACME Corp'],
+);
+$bundle->addEnvelopeTemplateFieldValue('start_date', '2026-01-15');
+
+$response = $client->bundles->createFromEnvelopeTemplateHelper($bundle);
+```
+
+For pre-built payloads, `createFromEnvelopeTemplate(array $data)` posts the
+array directly to `/bundles/create_from_envelope_template/`.
 
 ### Webhooks
 
