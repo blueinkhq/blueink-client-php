@@ -1,141 +1,301 @@
-# BlueInk API Client
+# Blueink API Client for PHP
 
-A PHP client to interact with the BlueInk REST API. 
-For an overview of the API, see the [API v2 Documentation](https://blueink.com/esignature-api/api-docs/).  
+A PHP SDK for the [Blueink](https://blueink.com) eSignature REST API.
+For full API reference see the [Blueink API v2 docs](https://developer.blueink.com).
 
-This client library relies on [guzzle](http://docs.guzzlephp.org/en/stable/) 
-and [snorlax](https://github.com/blueinkhq/snorlax), under the hood.
+## Requirements
 
-## Getting Started
+- PHP 8.1 or newer
+- ext-json
+- [Guzzle](http://docs.guzzlephp.org/en/stable/) 7.x (installed as a dependency)
+
+## Installation
+
+```bash
+composer require blueink/blueink-client-php
+```
+
+## Quickstart
 
 ```php
-use BlueInk\ApiClient\Client;
+use Blueink\ClientSDK\Client;
 
-$client = new Client('<API_KEY_HERE>');
+// Provide the key directly...
+$client = new Client('<YOUR_PRIVATE_API_KEY>');
 
-// Get a list of Bundles
-$bundle_list = $client->bundles->list();
+// ...or set BLUEINK_PRIVATE_API_KEY in the environment and call:
+// $client = new Client();
 
-// $bundle_list is the parsed data from the response. To 
-// get the actual response object, do:
-$response = $client->bundles->getLastResponse();
+$response = $client->bundles->list();
+foreach ($response->data as $bundle) {
+    echo $bundle['id'] . "\n";
+}
+```
 
-// Retrieve a single Bundle
-$bundle_id = $bundle_list[0]->id;
-$bundle = $client->bundles->retrieve($bundle_id);
+## Configuration
 
-// Get a list of Templates
-$template_list = $client->templates->list();
+The `Client` constructor accepts:
 
-// Assume there was at least one Document Template setup in the account
-$template_01 = $template_list[0];
-// Save the $role for later, so we can map our signer to
-// this role in the template.
-$role = $template_01->roles[0];
+| Argument | Default | Description |
+| --- | --- | --- |
+| `$private_api_key` | `getenv('BLUEINK_PRIVATE_API_KEY')` | Blueink private API key. |
+| `$base_url`        | `getenv('BLUEINK_API_URL')` ?? `https://api.blueink.com/api/v2` | Override for sandbox or custom hosts. |
+| `$raise_exceptions`| `true` | When `false`, 4XX/5XX responses are returned as `NormalizedResponse` instead of throwing a Guzzle exception. |
 
-// Setup data for a request to create a new Bundle,
-// using an existing template.
-$request_data = [
-    'label' => 'A Test Bundle',
+```php
+$client = new Client(
+    private_api_key: 'sk_live_…',
+    base_url: 'https://sandbox.blueink.com/api/v2',
+    raise_exceptions: false,
+);
+```
+
+## Responses: `NormalizedResponse`
+
+Every subclient method returns a `Blueink\ClientSDK\NormalizedResponse`:
+
+```php
+$response = $client->bundles->retrieve('abc123');
+
+$response->status;           // int  HTTP status code
+$response->data;             // mixed Decoded JSON body (associative array) or raw string
+$response->headers;          // array<string,string> Response headers (last value per name)
+$response->pagination;       // ?Pagination Parsed X-Blueink-Pagination header (list endpoints)
+$response->originalResponse; // Psr\Http\Message\ResponseInterface
+```
+
+The most-recent response for a given subclient is also retained:
+
+```php
+$last = $client->bundles->getLastResponse();
+```
+
+## Subclients
+
+The `Client` exposes one property per resource:
+
+| Property | Class | Resource |
+| --- | --- | --- |
+| `$client->bundles`   | `BundleSubClient`   | Bundles (envelopes) |
+| `$client->persons`   | `PersonSubClient`   | Persons (signers / contacts) |
+| `$client->packets`   | `PacketSubClient`   | Packets (per-recipient) |
+| `$client->templates` | `TemplateSubClient` | Document templates |
+| `$client->webhooks`  | `WebhookSubClient`  | Webhooks, headers, events, deliveries |
+
+### Bundles
+
+Create a Bundle from a hand-built payload:
+
+```php
+$response = $client->bundles->create([
+    'label'   => 'A Test Bundle',
     'is_test' => true,
-    'packets' => [
-         {
-             'name' => 'Peter Gibbons',
-             'email' => 'peter.gibbons@example.com',
-             'key' => 'signer-1',
-         }
-    ],
-    'documents' => [
-        'key' => 'doc-01',
-        'template_id' => $template_01->id,
-        'assignments' => [
-            'role' => $role,
-            'signer' => 'signer-01'
-        ]
-    ],
-];
-// Create and send a new Bundle. 
-// Note that we pass the request data as 'json', which results in
-// in the request body being sent as application/json data
-$new_bundle = $client->bundles->create([ 'json' => $request_data ]);
+    'packets' => [[
+        'key'   => 'signer-1',
+        'name'  => 'Peter Gibbons',
+        'email' => 'peter.gibbons@example.com',
+    ]],
+    'documents' => [[
+        'key'         => 'doc-01',
+        'file_url'    => 'https://example.com/contract.pdf',
+        'fields'      => [],
+    ]],
+]);
+
+$bundle_id = $response->data['id'];
 ```
 
-## Error Handling and Exceptions 
+Or use `BundleHelper` to assemble it:
 
-Requests raise exceptions if an error is encountered. This includes networking
-errors (connection timeout, DNS errors, etc), server errors (5XX status codes), 
-and application-level errors (4XX status codes). 
-
-See [documentation on Guzzle exceptions](http://docs.guzzlephp.org/en/stable/quickstart.html#exceptions)
-
-All exceptions extend from GuzzleHttp\Exception\TransferException.
-
-You can handle specific classes of errors as follows:
-
-All exceptions are in the namespace GuzzleHttp\Exception\.
-
-- 4XX errors: ClientException 
-- 5XX errors: ServerException 
-- Networking errors: ConnectException 
-- Too many redirects: TooManyRedirectsException 
-
-Or catch multiple classes of exceptions:
-
-- BadResponseException: 4XX and 5XX
-- RequestException: 4XX, 5XX and networking errors
-- TransferException: All errors that can be thrown during a request / response
-
-### Handle Multiple Errors by Catching a RequestException
 ```php
-try {
-    $client->bundles->create($new_bundle_data);
-} catch (RequestException $e) {
-    // A 4XX, 5XX or networking error occured
-    echo 'Got an exception';
-    $response = $e->getResponse();
-    echo "Status Code: " . $response->getStatusCode() . "\n";
-    echo "Reason: " . $response->getReasonPhrase() . "\n";
-    
-    // Dump the error details, which are formatted
-    // as described in the APIv2 documentation.
-    var_export($response->getBody()->getContents());
-}
+use Blueink\ClientSDK\BundleHelper;
+
+$bundle = new BundleHelper([
+    'label'   => 'A Test Bundle',
+    'is_test' => true,
+]);
+
+// Add a Document by URL, base64, file path (read at build time), or
+// file path (streamed as multipart at request time).
+$doc_key = $bundle->addDocumentByURL('https://example.com/contract.pdf');
+$bundle->addDocumentByPath('/tmp/nda.pdf');
+$bundle->addDocumentByFile('/tmp/large.pdf', 'application/pdf');
+
+// Add a Document built from an existing Template.
+$bundle->addDocumentTemplate('tmpl_abc123');
+
+$response = $client->bundles->createFromBundleHelper($bundle);
 ```
 
-### Handle Different Error Types Individually
+When the helper has files queued via `addDocumentByFile()`, the SDK transparently
+switches the request to `multipart/form-data`.
+
+Other Bundle operations:
 
 ```php
-try {
-    $client->bundles->create($new_bundle_data);
-} catch (ClientException $e) {
-    // handle 4XX error
-} catch (ServerException $e) {
-    // handle 5xx error
-} catch (RequestException $e) {
-    // handle any other error
-}
+$client->bundles->retrieve($bundle_id);
+$client->bundles->retrieve($bundle_id, related_data: true); // attach events / files / data
+$client->bundles->cancel($bundle_id);
+$client->bundles->listEvents($bundle_id);
+$client->bundles->listFiles($bundle_id);
+$client->bundles->listData($bundle_id);
+```
 
+### Persons
+
+```php
+use Blueink\ClientSDK\PersonHelper;
+
+$helper = new PersonHelper(['name' => 'Jane Doe']);
+$helper->addEmail('jane@example.com');
+$helper->addPhone('+15551234567');
+
+$created = $client->persons->createFromPersonHelper($helper);
+$person_id = $created->data['id'];
+
+$client->persons->retrieve($person_id);
+$client->persons->update($person_id, ['metadata' => ['vip' => true]], partial: true);
+$client->persons->delete($person_id);
+```
+
+> The Blueink API normalizes `name` by splitting on whitespace into first/last
+> tokens, so the round-tripped `name` may not be byte-identical to what was sent.
+
+### Packets
+
+```php
+$client->packets->update($packet_id, ['email' => 'new@example.com']);
+$client->packets->embedURL($packet_id);    // signed embedded-signing URL
+$client->packets->retrieveCOE($packet_id); // Certificate of Evidence
+$client->packets->remind($packet_id);
+```
+
+### Templates
+
+```php
+$client->templates->list();
+$client->templates->retrieve($template_id);
+```
+
+### Webhooks
+
+```php
+$created = $client->webhooks->create([
+    'name'        => 'My integration',
+    'url'         => 'https://example.com/blueink-webhook',
+    'event_types' => ['bundle_complete'],
+]);
+
+$client->webhooks->update($id, ['url' => '…'], partial: true);
+$client->webhooks->delete($id);
+
+// Custom request headers Blueink will send to your endpoint
+$client->webhooks->createHeader([
+    'webhook' => $id,
+    'name'    => 'X-My-Token',
+    'value'   => 'shhh',
+    'order'   => 0,
+]);
+
+// Verification of incoming deliveries
+$client->webhooks->retrieveSecret();
+$client->webhooks->regenerateSecret();
+
+// Inspection
+$client->webhooks->listEvents();
+$client->webhooks->listDeliveries();
+$client->webhooks->retrieveDelivery($delivery_id);
 ```
 
 ## Pagination
 
-API operations that return lists of data (e.g. `/bundles/`, `/persons/`)
-are paginated. 
+List endpoints accept `page` and `per_page` and return a `Pagination` object on
+the response, parsed from the `X-Blueink-Pagination` header:
 
 ```php
-$bundles = $client->bundles->list();
-$response = $client->bundles->getLastResponse();
+$response = $client->bundles->list(page: 1, per_page: 25);
 
-
+$response->pagination->page_number;
+$response->pagination->total_pages;
+$response->pagination->per_page;
+$response->pagination->total_results;
 ```
 
-## Code Conventions
+For automatic page-walking, every list-capable subclient exposes a `pagedList()`
+that returns a `Paginated` iterator. Each iteration yields the next page's
+`NormalizedResponse`:
 
-We use the following naming conventions in this code base:
+```php
+foreach ($client->bundles->pagedList(per_page: 100) as $page) {
+    foreach ($page->data as $bundle) {
+        // …
+    }
+}
+```
 
-- ClassName
-- methodName
-- propertyName
-- function_name (meant for global functions)
-- $variable_name
-- CONSTANT_NAME (created with define(...))
+## Error handling
+
+By default 4XX/5XX responses raise the corresponding Guzzle exception
+(`GuzzleHttp\Exception\ClientException`, `ServerException`, `ConnectException`,
+etc.). The Blueink API returns a structured error body:
+
+```json
+{
+    "detail": "Invalid input.",
+    "code": "invalid",
+    "errors": [
+        { "field": "channels", "message": "This field is required." }
+    ]
+}
+```
+
+```php
+use GuzzleHttp\Exception\BadResponseException;
+
+try {
+    $client->persons->create(['name' => 'Jane Doe']);
+} catch (BadResponseException $e) {
+    $body = json_decode((string) $e->getResponse()->getBody(), true);
+    foreach ($body['errors'] ?? [] as $error) {
+        printf("%s: %s\n", $error['field'], $error['message']);
+    }
+}
+```
+
+To inspect failures without try/catch, construct the client with
+`raise_exceptions: false`. 4XX and 5XX responses then come back as
+`NormalizedResponse` objects with `status` and decoded `data`:
+
+```php
+$client = new Client(raise_exceptions: false);
+
+$response = $client->persons->create(['name' => 'Jane Doe']);
+if ($response->status >= 400) {
+    var_dump($response->data);
+}
+```
+
+## Testing
+
+The SDK ships with two PHPUnit suites:
+
+- **`unit`** (default) — fast, hermetic. Uses Guzzle's `MockHandler` to verify
+  request shaping (verb, URL, headers, JSON / multipart body) without touching
+  the network.
+- **`integration`** — opt-in. Hits a real Blueink environment using the key in
+  `BLUEINK_PRIVATE_API_KEY` (and optional `BLUEINK_API_URL`). Tests are skipped
+  automatically when the key is absent. Use a sandbox account.
+
+```bash
+# Unit suite (runs by default)
+./vendor/bin/phpunit
+
+# Integration suite, against your sandbox
+BLUEINK_PRIVATE_API_KEY=sk_sandbox_… \
+BLUEINK_API_URL=https://sandbox.blueink.com/api/v2 \
+    ./vendor/bin/phpunit --testsuite=integration
+```
+
+## License
+
+[MIT](LICENSE).
