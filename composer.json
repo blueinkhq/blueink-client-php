@@ -24,5 +24,10 @@
       "src/blueink/constants.php"
     ]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Blueink\\ClientSDK\\Tests\\": "tests/"
+    }
+  },
   "minimum-stability": "stable"
 }

@@ -35,6 +35,8 @@ class Paginated implements \Iterator
     public function nextPage(): ?NormalizedResponse
     {
         if (!is_null($this->total_pages) && $this->current_page > $this->total_pages) {
+            $this->current_response = null;
+
             return null;
         }
 
