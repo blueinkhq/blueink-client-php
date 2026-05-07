@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK\Tests;
 
 use Blueink\ClientSDK\TemplateSubClient;
@@ -32,7 +33,7 @@ class TemplateSubClientHttpTest extends TestCase
         $req = $built['history'][0]['request'];
         $this->assertSame('GET', $req->getMethod());
         parse_str($req->getUri()->getQuery(), $q);
-        $this->assertSame('2',  $q['page']);
+        $this->assertSame('2', $q['page']);
         $this->assertSame('50', $q['per_page']);
         $this->assertSame(self::BASE . '/templates/', $req->getUri()->getScheme() . '://' . $req->getUri()->getHost() . $req->getUri()->getPath());
     }

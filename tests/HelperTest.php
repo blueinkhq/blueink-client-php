@@ -1,7 +1,7 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use Blueink\ClientSDK\Helper;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Blueink\ClientSDK\Helper
@@ -59,12 +59,12 @@ class HelperTest extends TestCase
         $data = ['key1' => 'value1', 'key2' => 'value2'];
         $additional = ['key3' => 'value3', 'key4' => 'value4'];
         $result = Helper::mergeAdditionalData($data, $additional);
-        
+
         $expected = [
             'key1' => 'value1',
             'key2' => 'value2',
             'key3' => 'value3',
-            'key4' => 'value4'
+            'key4' => 'value4',
         ];
         $this->assertEquals($expected, $result);
     }
@@ -77,7 +77,7 @@ class HelperTest extends TestCase
         $data = ['key1' => 'original', 'key2' => 'value2'];
         $additional = ['key1' => 'overwritten'];
         $result = Helper::mergeAdditionalData($data, $additional);
-        
+
         $this->assertEquals('overwritten', $result['key1']);
         $this->assertEquals('value2', $result['key2']);
     }
@@ -109,11 +109,11 @@ class HelperTest extends TestCase
             'name' => 'John',
             'email' => null,
             'phone' => '123-456-7890',
-            'address' => null
+            'address' => null,
         ];
-        
+
         $result = Helper::removeNullProperties($obj);
-        
+
         $this->assertEquals('John', $result->name);
         $this->assertEquals('123-456-7890', $result->phone);
         $this->assertFalse(property_exists($result, 'email'));
@@ -128,11 +128,11 @@ class HelperTest extends TestCase
         $obj = (object)[
             'field1' => null,
             'field2' => null,
-            'field3' => null
+            'field3' => null,
         ];
-        
+
         $result = Helper::removeNullProperties($obj);
-        
+
         $this->assertIsObject($result);
         $this->assertEquals(0, count((array)$result));
     }
@@ -145,11 +145,11 @@ class HelperTest extends TestCase
         $obj = (object)[
             'name' => 'Jane',
             'email' => 'jane@example.com',
-            'phone' => '987-654-3210'
+            'phone' => '987-654-3210',
         ];
-        
+
         $result = Helper::removeNullProperties($obj);
-        
+
         $this->assertEquals('Jane', $result->name);
         $this->assertEquals('jane@example.com', $result->email);
         $this->assertEquals('987-654-3210', $result->phone);
@@ -164,4 +164,3 @@ class HelperTest extends TestCase
         $this->assertNull($result);
     }
 }
-

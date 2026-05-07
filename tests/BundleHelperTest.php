@@ -3,9 +3,9 @@
 require_once __DIR__ . '/../src/blueink/helpers/BundleHelper.php';
 require_once __DIR__ . '/../src/blueink/models/Bundles.php';
 
-use PHPUnit\Framework\TestCase;
 use Blueink\ClientSDK\BundleHelper;
 use Blueink\ClientSDK\Document;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Blueink\ClientSDK\BundleHelper
@@ -36,7 +36,7 @@ class BundleHelperTest extends TestCase
     {
         $params = ['label' => 'Test Bundle'];
         $helper = new BundleHelper($params);
-        
+
         $this->assertEquals('Test Bundle', $helper->label);
     }
 
@@ -47,10 +47,10 @@ class BundleHelperTest extends TestCase
     {
         $params = [
             'email_subject' => 'Please Sign',
-            'email_message' => 'Please review and sign the document'
+            'email_message' => 'Please review and sign the document',
         ];
         $helper = new BundleHelper($params);
-        
+
         $this->assertEquals('Please Sign', $helper->email_subject);
         $this->assertEquals('Please review and sign the document', $helper->email_message);
     }
@@ -73,7 +73,7 @@ class BundleHelperTest extends TestCase
     {
         $params = ['is_test' => true];
         $helper = new BundleHelper($params);
-        
+
         $this->assertTrue($helper->is_test);
     }
 
@@ -90,7 +90,7 @@ class BundleHelperTest extends TestCase
             'team' => 'Legal',
             'is_test' => true,
             'in_order' => true,
-            'cc_emails' => ['cc1@example.com', 'cc2@example.com']
+            'cc_emails' => ['cc1@example.com', 'cc2@example.com'],
         ];
         $helper = new BundleHelper($params);
 
@@ -110,10 +110,10 @@ class BundleHelperTest extends TestCase
     public function testBundleHelperAddCC()
     {
         $helper = new BundleHelper([]);
-        
+
         $helper->addCC('cc1@example.com');
         $helper->addCC('cc2@example.com');
-        
+
         $this->assertCount(2, $helper->cc_emails);
         $this->assertContains('cc1@example.com', $helper->cc_emails);
         $this->assertContains('cc2@example.com', $helper->cc_emails);
@@ -126,9 +126,9 @@ class BundleHelperTest extends TestCase
     {
         $params = ['cc_emails' => ['existing@example.com']];
         $helper = new BundleHelper($params);
-        
+
         $helper->addCC('new@example.com');
-        
+
         $this->assertCount(2, $helper->cc_emails);
         $this->assertContains('existing@example.com', $helper->cc_emails);
         $this->assertContains('new@example.com', $helper->cc_emails);
@@ -140,9 +140,9 @@ class BundleHelperTest extends TestCase
     public function testBundleHelperAddDocumentByURL()
     {
         $helper = new BundleHelper([]);
-        
+
         $key = $helper->addDocumentByURL('https://example.com/document.pdf');
-        
+
         $this->assertIsString($key);
         $this->assertStringStartsWith('doc_', $key);
         $this->assertCount(1, $helper->documents);
@@ -155,9 +155,9 @@ class BundleHelperTest extends TestCase
     {
         $helper = new BundleHelper([]);
         $b64Content = base64_encode('PDF content here');
-        
+
         $key = $helper->addDocumentByB64('test.pdf', $b64Content);
-        
+
         $this->assertIsString($key);
         $this->assertStringStartsWith('doc_', $key);
         $this->assertCount(1, $helper->documents);
@@ -171,10 +171,10 @@ class BundleHelperTest extends TestCase
         $helper = new BundleHelper([]);
         $b64Content1 = base64_encode('PDF content 1');
         $b64Content2 = base64_encode('PDF content 2');
-        
+
         $key1 = $helper->addDocumentByB64('test1.pdf', $b64Content1);
         $key2 = $helper->addDocumentByB64('test2.pdf', $b64Content2);
-        
+
         $this->assertNotEquals($key1, $key2);
         $this->assertCount(2, $helper->documents);
     }
@@ -188,7 +188,7 @@ class BundleHelperTest extends TestCase
             'label' => 'Test',
             'reminder_offset' => 3,
             'reminder_interval' => 7,
-            'reminder_expires' => '2024-12-31'
+            'reminder_expires' => '2024-12-31',
         ];
         $helper = new BundleHelper($params);
 
@@ -204,7 +204,7 @@ class BundleHelperTest extends TestCase
     {
         $params = [
             'label' => 'Test',
-            'cc_emails' => ['cc@example.com']
+            'cc_emails' => ['cc@example.com'],
         ];
         $helper = new BundleHelper($params);
 
@@ -219,15 +219,14 @@ class BundleHelperTest extends TestCase
     {
         $documents = [Document::create('doc_1'), Document::create('doc_2')];
         $packets = ['packet_1', 'packet_2'];
-        
+
         $params = [
             'documents' => $documents,
-            'packets' => $packets
+            'packets' => $packets,
         ];
         $helper = new BundleHelper($params);
-        
+
         $this->assertCount(2, $helper->documents);
         $this->assertCount(2, $helper->packets);
     }
 }
-

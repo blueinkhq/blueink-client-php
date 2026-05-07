@@ -2,8 +2,8 @@
 
 require_once __DIR__ . '/../src/blueink/helpers/PersonHelper.php';
 
-use PHPUnit\Framework\TestCase;
 use Blueink\ClientSDK\PersonHelper;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Blueink\ClientSDK\PersonHelper
@@ -77,7 +77,7 @@ class PersonHelperTest extends TestCase
             'name' => 'Jane Smith',
             'metadata' => ['role' => 'Manager'],
             'phones' => ['555-9999'],
-            'emails' => ['jane@example.com']
+            'emails' => ['jane@example.com'],
         ];
         $helper = new PersonHelper($params);
 
@@ -93,10 +93,10 @@ class PersonHelperTest extends TestCase
     public function testPersonHelperAddPhone()
     {
         $helper = new PersonHelper([]);
-        
+
         $helper->addPhone('555-1234');
         $helper->addPhone('555-5678');
-        
+
         $this->assertCount(2, $helper->phones);
         $this->assertContains('555-1234', $helper->phones);
         $this->assertContains('555-5678', $helper->phones);
@@ -124,10 +124,10 @@ class PersonHelperTest extends TestCase
     {
         $params = ['phones' => ['555-0000', '555-1111']];
         $helper = new PersonHelper($params);
-        
+
         $newPhones = ['555-9999', '555-8888'];
         $helper->setPhones($newPhones);
-        
+
         $this->assertEquals($newPhones, $helper->phones);
         $this->assertCount(2, $helper->phones);
     }
@@ -152,10 +152,10 @@ class PersonHelperTest extends TestCase
     public function testPersonHelperAddEmail()
     {
         $helper = new PersonHelper([]);
-        
+
         $helper->addEmail('john@example.com');
         $helper->addEmail('john.doe@example.com');
-        
+
         $this->assertCount(2, $helper->emails);
         $this->assertContains('john@example.com', $helper->emails);
         $this->assertContains('john.doe@example.com', $helper->emails);
@@ -211,10 +211,10 @@ class PersonHelperTest extends TestCase
     public function testPersonHelperSetMetadata()
     {
         $helper = new PersonHelper([]);
-        
+
         $metadata = ['role' => 'Manager', 'department' => 'Engineering'];
         $helper->setMetadata($metadata);
-        
+
         $this->assertEquals($metadata, $helper->metadata);
     }
 
@@ -224,9 +224,9 @@ class PersonHelperTest extends TestCase
     public function testPersonHelperSetName()
     {
         $helper = new PersonHelper([]);
-        
+
         $helper->set_name('Alice Johnson');
-        
+
         $this->assertEquals('Alice Johnson', $helper->name);
     }
 
@@ -236,16 +236,15 @@ class PersonHelperTest extends TestCase
     public function testPersonHelperMultipleContactChannels()
     {
         $helper = new PersonHelper([]);
-        
+
         $helper->addPhone('555-1111');
         $helper->addPhone('555-2222');
         $helper->addPhone('555-3333');
-        
+
         $helper->addEmail('email1@example.com');
         $helper->addEmail('email2@example.com');
-        
+
         $this->assertCount(3, $helper->phones);
         $this->assertCount(2, $helper->emails);
     }
 }
-

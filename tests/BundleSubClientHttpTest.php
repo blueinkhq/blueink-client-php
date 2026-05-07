@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK\Tests;
 
 use Blueink\ClientSDK\BundleHelper;
@@ -165,8 +166,8 @@ class BundleSubClientHttpTest extends TestCase
         $built['sub']->listData('b1');
 
         $this->assertSame(self::BASE . '/bundles/b1/events/', (string) $built['history'][0]['request']->getUri());
-        $this->assertSame(self::BASE . '/bundles/b1/files/',  (string) $built['history'][1]['request']->getUri());
-        $this->assertSame(self::BASE . '/bundles/b1/data/',   (string) $built['history'][2]['request']->getUri());
+        $this->assertSame(self::BASE . '/bundles/b1/files/', (string) $built['history'][1]['request']->getUri());
+        $this->assertSame(self::BASE . '/bundles/b1/data/', (string) $built['history'][2]['request']->getUri());
     }
 
     public function testCreateFromEnvelopeTemplatePostsJsonToEnvelopeEndpoint(): void

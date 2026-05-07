@@ -3,12 +3,11 @@
 require_once __DIR__ . '/../src/blueink/models/Bundles.php';
 require_once __DIR__ . '/../src/blueink/helpers/Helper.php';
 
-use PHPUnit\Framework\TestCase;
+use Blueink\ClientSDK\Bundle;
+use Blueink\ClientSDK\Document;
 use Blueink\ClientSDK\Field;
 use Blueink\ClientSDK\Packet;
-use Blueink\ClientSDK\Document;
-use Blueink\ClientSDK\Bundle;
-use Blueink\ClientSDK\Helper;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Blueink\ClientSDK\Field
@@ -31,11 +30,11 @@ class BundlesModelTest extends TestCase
             'w' => 100,
             'h' => 50,
             'label' => 'Sign Here',
-            'page' => 1
+            'page' => 1,
         ];
-        
+
         $field = new Field($params);
-        
+
         $this->assertEquals('signature', $field->kind);
         $this->assertEquals('field_abc123', $field->key);
         $this->assertEquals(10, $field->x);
@@ -79,12 +78,12 @@ class BundlesModelTest extends TestCase
             'x' => 10,
             'y' => 20,
             'w' => 100,
-            'h' => 50
+            'h' => 50,
         ]);
-        
+
         $field->addEditor('editor1@example.com');
         $field->addEditor('editor2@example.com');
-        
+
         $this->assertCount(2, $field->editors);
         $this->assertContains('editor1@example.com', $field->editors);
         $this->assertContains('editor2@example.com', $field->editors);
@@ -108,11 +107,11 @@ class BundlesModelTest extends TestCase
             'key' => 'packet_123',
             'name' => 'John Doe',
             'email' => 'john@example.com',
-            'phone' => '555-1234'
+            'phone' => '555-1234',
         ];
-        
+
         $packet = new Packet($params);
-        
+
         $this->assertEquals('packet_123', $packet->key);
         $this->assertEquals('John Doe', $packet->name);
         $this->assertEquals('john@example.com', $packet->email);
@@ -125,7 +124,7 @@ class BundlesModelTest extends TestCase
     public function testPacketCreateGeneratesKey()
     {
         $packet = Packet::create();
-        
+
         $this->assertStringStartsWith('packet_', $packet->key);
     }
 
@@ -135,7 +134,7 @@ class BundlesModelTest extends TestCase
     public function testPacketCreateWithKey()
     {
         $packet = Packet::create('custom_packet_key', 'Jane Doe');
-        
+
         $this->assertEquals('custom_packet_key', $packet->key);
         $this->assertEquals('Jane Doe', $packet->name);
     }
@@ -157,11 +156,11 @@ class BundlesModelTest extends TestCase
         $params = [
             'key' => 'doc_123',
             'file_url' => 'https://example.com/file.pdf',
-            'parse_tags' => true
+            'parse_tags' => true,
         ];
-        
+
         $document = new Document($params);
-        
+
         $this->assertEquals('doc_123', $document->key);
         $this->assertEquals('https://example.com/file.pdf', $document->file_url);
     }
@@ -172,7 +171,7 @@ class BundlesModelTest extends TestCase
     public function testDocumentCreateGeneratesKey()
     {
         $document = Document::create();
-        
+
         $this->assertStringStartsWith('doc_', $document->key);
     }
 
@@ -188,7 +187,7 @@ class BundlesModelTest extends TestCase
             'x' => 10,
             'y' => 20,
             'w' => 100,
-            'h' => 50
+            'h' => 50,
         ]);
 
         $document->addField($field);
@@ -222,9 +221,9 @@ class BundlesModelTest extends TestCase
     {
         $packets = [Packet::create('packet_1')];
         $documents = [Document::create('doc_1')];
-        
+
         $bundle = Bundle::create($packets, $documents, ['label' => 'Test Bundle']);
-        
+
         $this->assertCount(1, $bundle->packets);
         $this->assertCount(1, $bundle->documents);
         $this->assertEquals('Test Bundle', $bundle->label);
@@ -264,4 +263,3 @@ class BundlesModelTest extends TestCase
         $this->assertCount(2, $bundle->documents);
     }
 }
-

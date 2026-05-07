@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK;
 
 use Psr\Http\Message\ResponseInterface;

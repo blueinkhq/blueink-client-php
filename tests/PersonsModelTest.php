@@ -2,9 +2,9 @@
 
 require_once __DIR__ . '/../src/blueink/models/Persons.php';
 
-use PHPUnit\Framework\TestCase;
 use Blueink\ClientSDK\ContactChannel;
 use Blueink\ClientSDK\Person;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Blueink\ClientSDK\ContactChannel
@@ -18,7 +18,7 @@ class PersonsModelTest extends TestCase
     public function testContactChannelConstructorEmpty()
     {
         $channel = new ContactChannel([]);
-        
+
         $this->assertNull($channel->email);
         $this->assertNull($channel->phone);
         $this->assertNull($channel->kind);
@@ -31,7 +31,7 @@ class PersonsModelTest extends TestCase
     {
         $params = ['email' => 'john@example.com'];
         $channel = new ContactChannel($params);
-        
+
         $this->assertEquals('john@example.com', $channel->email);
         $this->assertNull($channel->phone);
         $this->assertNull($channel->kind);
@@ -44,7 +44,7 @@ class PersonsModelTest extends TestCase
     {
         $params = ['phone' => '555-1234'];
         $channel = new ContactChannel($params);
-        
+
         $this->assertEquals('555-1234', $channel->phone);
         $this->assertNull($channel->email);
         $this->assertNull($channel->kind);
@@ -58,10 +58,10 @@ class PersonsModelTest extends TestCase
         $params = [
             'email' => 'jane@example.com',
             'phone' => '555-5678',
-            'kind' => 'em'
+            'kind' => 'em',
         ];
         $channel = new ContactChannel($params);
-        
+
         $this->assertEquals('jane@example.com', $channel->email);
         $this->assertEquals('555-5678', $channel->phone);
         $this->assertEquals('em', $channel->kind);
@@ -73,7 +73,7 @@ class PersonsModelTest extends TestCase
     public function testContactChannelConstructorNullParams()
     {
         $channel = new ContactChannel(null);
-        
+
         $this->assertNull($channel->email);
         $this->assertNull($channel->phone);
         $this->assertNull($channel->kind);
@@ -85,7 +85,7 @@ class PersonsModelTest extends TestCase
     public function testPersonConstructorEmpty()
     {
         $person = new Person([]);
-        
+
         $this->assertNull($person->name);
         $this->assertNull($person->metadata);
         $this->assertNull($person->channel);
@@ -98,7 +98,7 @@ class PersonsModelTest extends TestCase
     {
         $params = ['name' => 'John Doe'];
         $person = new Person($params);
-        
+
         $this->assertEquals('John Doe', $person->name);
         $this->assertNull($person->metadata);
         $this->assertNull($person->channel);
@@ -112,7 +112,7 @@ class PersonsModelTest extends TestCase
         $metadata = ['employee_id' => '12345', 'department' => 'Sales'];
         $params = ['metadata' => $metadata];
         $person = new Person($params);
-        
+
         $this->assertEquals($metadata, $person->metadata);
         $this->assertNull($person->name);
         $this->assertNull($person->channel);
@@ -126,7 +126,7 @@ class PersonsModelTest extends TestCase
         $channel = new ContactChannel(['email' => 'john@example.com']);
         $params = ['channel' => $channel];
         $person = new Person($params);
-        
+
         $this->assertInstanceOf(ContactChannel::class, $person->channel);
         $this->assertEquals('john@example.com', $person->channel->email);
     }
@@ -141,10 +141,10 @@ class PersonsModelTest extends TestCase
         $params = [
             'name' => 'Jane Smith',
             'metadata' => $metadata,
-            'channel' => $channel
+            'channel' => $channel,
         ];
         $person = new Person($params);
-        
+
         $this->assertEquals('Jane Smith', $person->name);
         $this->assertEquals($metadata, $person->metadata);
         $this->assertInstanceOf(ContactChannel::class, $person->channel);
@@ -158,7 +158,7 @@ class PersonsModelTest extends TestCase
     public function testPersonConstructorNullParams()
     {
         $person = new Person(null);
-        
+
         $this->assertNull($person->name);
         $this->assertNull($person->metadata);
         $this->assertNull($person->channel);
@@ -173,11 +173,11 @@ class PersonsModelTest extends TestCase
             'employee_id' => '12345',
             'department' => 'Engineering',
             'location' => 'New York',
-            'start_date' => '2023-01-15'
+            'start_date' => '2023-01-15',
         ];
         $params = ['name' => 'Bob Johnson', 'metadata' => $metadata];
         $person = new Person($params);
-        
+
         $this->assertCount(4, $person->metadata);
         $this->assertEquals('Engineering', $person->metadata['department']);
         $this->assertEquals('New York', $person->metadata['location']);
@@ -190,9 +190,8 @@ class PersonsModelTest extends TestCase
     {
         $emailChannel = new ContactChannel(['email' => 'test@example.com', 'kind' => 'em']);
         $phoneChannel = new ContactChannel(['phone' => '555-1234', 'kind' => 'mp']);
-        
+
         $this->assertEquals('em', $emailChannel->kind);
         $this->assertEquals('mp', $phoneChannel->kind);
     }
 }
-

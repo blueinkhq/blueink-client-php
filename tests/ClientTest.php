@@ -2,8 +2,8 @@
 /**
  */
 
-use PHPUnit\Framework\TestCase;
 use Blueink\ClientSDK\Client;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Blueink\Client

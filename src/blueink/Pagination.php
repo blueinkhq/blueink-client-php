@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK;
 
 /**
@@ -25,10 +26,10 @@ class Pagination
 
     public function paginationAsString(): string
     {
-        return "page_number: " . $this->page_number
-            . ", per_page:" . $this->per_page
-            . ", total_pages:" . $this->total_pages
-            . ", total_results: " . $this->total_results;
+        return 'page_number: ' . $this->page_number
+            . ', per_page:' . $this->per_page
+            . ', total_pages:' . $this->total_pages
+            . ', total_results: ' . $this->total_results;
     }
 
     public function __toString(): string

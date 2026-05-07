@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK;
 
 class TemplateSubClient extends SubClient

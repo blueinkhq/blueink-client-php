@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK\Tests;
 
 use Blueink\ClientSDK\PersonHelper;
@@ -79,9 +80,9 @@ class PersonSubClientHttpTest extends TestCase
         $built['sub']->list(3, 10, ['team' => 'A']);
 
         parse_str($built['history'][0]['request']->getUri()->getQuery(), $q);
-        $this->assertSame('3',  $q['page']);
+        $this->assertSame('3', $q['page']);
         $this->assertSame('10', $q['per_page']);
-        $this->assertSame('A',  $q['team']);
+        $this->assertSame('A', $q['team']);
     }
 
     public function testRetrieveHitsPersonPath(): void

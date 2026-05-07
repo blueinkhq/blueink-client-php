@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK;
 
 use GuzzleHttp\Exception\BadResponseException;
@@ -76,9 +77,9 @@ class BlueinkApiError extends \RuntimeException
         $raw_body    = (string) $response->getBody();
         $body        = self::decodeBody($raw_body);
 
-        $detail   = is_array($body) && isset($body['detail'])  && is_string($body['detail'])  ? $body['detail']  : null;
-        $api_code = is_array($body) && isset($body['code'])    && is_string($body['code'])    ? $body['code']    : null;
-        $errors   = is_array($body) && isset($body['errors'])  && is_array($body['errors'])   ? array_values($body['errors']) : [];
+        $detail   = is_array($body) && isset($body['detail'])  && is_string($body['detail']) ? $body['detail'] : null;
+        $api_code = is_array($body) && isset($body['code'])    && is_string($body['code']) ? $body['code'] : null;
+        $errors   = is_array($body) && isset($body['errors'])  && is_array($body['errors']) ? array_values($body['errors']) : [];
 
         $message = self::buildMessage($status_code, $detail, $api_code, $errors, $request);
 
@@ -134,7 +135,7 @@ class BlueinkApiError extends \RuntimeException
                 if (!is_array($err)) {
                     continue;
                 }
-                $field   = isset($err['field'])   && is_string($err['field'])   ? $err['field']   : null;
+                $field   = isset($err['field'])   && is_string($err['field']) ? $err['field'] : null;
                 $err_msg = isset($err['message']) && is_string($err['message']) ? $err['message'] : null;
                 if ($field !== null && $err_msg !== null) {
                     $field_summaries[] = "{$field}: {$err_msg}";

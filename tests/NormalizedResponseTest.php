@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK\Tests;
 
 use Blueink\ClientSDK\NormalizedResponse;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK\Tests;
 
 use Blueink\ClientSDK\EnvelopeTemplateSubClient;
@@ -32,7 +33,7 @@ class EnvelopeTemplateSubClientHttpTest extends TestCase
         $req = $built['history'][0]['request'];
         $this->assertSame('GET', $req->getMethod());
         parse_str($req->getUri()->getQuery(), $q);
-        $this->assertSame('3',  $q['page']);
+        $this->assertSame('3', $q['page']);
         $this->assertSame('25', $q['per_page']);
         $this->assertSame(
             self::BASE . '/envelope-templates/',

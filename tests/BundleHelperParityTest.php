@@ -1,8 +1,8 @@
 <?php
+
 namespace Blueink\ClientSDK\Tests;
 
 use Blueink\ClientSDK\BundleHelper;
-use Blueink\ClientSDK\TemplateRef;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -42,8 +42,15 @@ class BundleHelperParityTest extends TestCase
         $doc = $bh->addDocumentByURL('https://example.com/doc.pdf');
 
         $field_key = $bh->addField(
-            document_key: $doc, x: 1, y: 2, w: 3, h: 4, p: 5,
-            kind: 'sig', editors: [$signer], label: 'Sign Here'
+            document_key: $doc,
+            x: 1,
+            y: 2,
+            w: 3,
+            h: 4,
+            p: 5,
+            kind: 'sig',
+            editors: [$signer],
+            label: 'Sign Here'
         );
 
         $this->assertStringStartsWith('field_', $field_key);

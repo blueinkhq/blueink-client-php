@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK\Tests\Integration;
 
 use Blueink\ClientSDK\Client;

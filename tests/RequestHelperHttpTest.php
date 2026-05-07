@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK\Tests;
 
 use Blueink\ClientSDK\BlueinkApiError;
@@ -94,8 +95,8 @@ class RequestHelperHttpTest extends TestCase
         $req->patch('https://api.example.com/x/1/', ['json' => ['b' => 2]]);
         $req->delete('https://api.example.com/x/1/');
 
-        $this->assertSame('PUT',    $built['history'][0]['request']->getMethod());
-        $this->assertSame('PATCH',  $built['history'][1]['request']->getMethod());
+        $this->assertSame('PUT', $built['history'][0]['request']->getMethod());
+        $this->assertSame('PATCH', $built['history'][1]['request']->getMethod());
         $this->assertSame('DELETE', $built['history'][2]['request']->getMethod());
     }
 

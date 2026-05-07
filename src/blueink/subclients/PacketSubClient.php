@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK;
 
 class PacketSubClient extends SubClient

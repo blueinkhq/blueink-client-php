@@ -1,11 +1,12 @@
 <?php
+
 namespace Blueink\ClientSDK\Tests\Support;
 
+use Blueink\ClientSDK\RequestHelper;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
-use Blueink\ClientSDK\RequestHelper;
 
 /**
  * Wire a Guzzle client to a MockHandler queue and capture every outbound

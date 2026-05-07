@@ -1,4 +1,5 @@
 <?php
+
 namespace Blueink\ClientSDK;
 
 class PersonSubClient extends SubClient
@@ -8,8 +9,8 @@ class PersonSubClient extends SubClient
      */
     public function create(array $data, ?array $additional_data = null): NormalizedResponse
     {
-        if (empty($data["name"])) {
-            throw new \InvalidArgumentException("A name is required to create a Person");
+        if (empty($data['name'])) {
+            throw new \InvalidArgumentException('A name is required to create a Person');
         }
         if (!is_null($additional_data)) {
             $data = Helper::mergeAdditionalData($data, $additional_data);
