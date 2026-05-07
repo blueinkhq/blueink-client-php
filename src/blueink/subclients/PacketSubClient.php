@@ -1,55 +1,37 @@
 <?php
-    namespace Blueink\ClientSDK;
-    require_once __DIR__ . "/../Endpoints.php";
-    use Blueink\ClientSDK\SubClient;
-    class PacketSubClient extends SubClient{
-        /**
-         * Update a Packet
-         * 
-         * @param string $packet_id: the ID of Packet
-         * @param array $data: Array of update data. E.g: ['json' => []], ['body' => []]
-         * 
-         * @return mixed response patch request
-         */
-        public function update(string $packet_id, array $data) {
-            $url = parent::buildURL(PacketEndpoints::UPDATE($packet_id));
-            
-            return parent::$request->patch($url, $data);
-        }
-        /**
-         * Create an embedded signing URL
-         * 
-         * @param string $packet_id: the ID of the Packet
-         * 
-         * @return mixed response of the request
-         */
-        public function embedURL(string $packet_id) {
-            $url = parent::buildURL(PacketEndpoints::embedURL($packet_id));
 
-            return parent::$request->post($url);
-        }
-        /**
-         * Retrieve COE
-         * 
-         * @param string $packet_id: the ID of the Packet
-         * 
-         * @return mixed response of the request
-         */
-        public function retrieveCOE(string $packet_id) {
-            $url = parent::buildURL(PacketEndpoints::retrieveCOE($packet_id));
+namespace Blueink\ClientSDK;
 
-            return parent::$request->get($url);
-        }
-        /**
-         * Send a reminder to this Packet
-         * 
-         * @param string $packet_id: the ID of the Packet
-         * 
-         * @return mixed response of the request
-         */
-        public function remind(string $packet_id) {
-            $url = parent::buildURL(PacketEndpoints::REMIND($packet_id));
+class PacketSubClient extends SubClient
+{
+    public function update(string $packet_id, array $data): NormalizedResponse
+    {
+        $url = $this->buildURL(PacketEndpoints::update($packet_id));
 
-            return parent::$request->post($url);
-        }
+        return $this->request->patch($url, ['json' => $data]);
     }
+
+    /**
+     * Create an embedded signing URL for the given Packet.
+     */
+    public function embedURL(string $packet_id): NormalizedResponse
+    {
+        return $this->request->post($this->buildURL(PacketEndpoints::embedURL($packet_id)));
+    }
+
+    /**
+     * Retrieve a Certificate of Evidence (COE) for the Packet.
+     */
+    public function retrieveCOE(string $packet_id): NormalizedResponse
+    {
+        return $this->request->get($this->buildURL(PacketEndpoints::retrieveCOE($packet_id)));
+    }
+
+    /**
+     * Send a reminder to the Packet recipient.
+     */
+    public function remind(string $packet_id): NormalizedResponse
+    {
+        return $this->request->put($this->buildURL(PacketEndpoints::remind($packet_id)));
+    }
+}

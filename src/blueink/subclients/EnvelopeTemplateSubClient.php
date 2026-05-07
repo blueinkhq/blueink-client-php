@@ -2,10 +2,10 @@
 
 namespace Blueink\ClientSDK;
 
-class TemplateSubClient extends SubClient
+class EnvelopeTemplateSubClient extends SubClient
 {
     /**
-     * Return a Paginated iterator that lazily fetches Template pages.
+     * Return a Paginated iterator that lazily fetches EnvelopeTemplate pages.
      */
     public function pagedList(int $page = 1, int $per_page = 50, ?array $query_params = null): Paginated
     {
@@ -18,14 +18,14 @@ class TemplateSubClient extends SubClient
 
     public function list(?int $page = null, ?int $per_page = null, ?array $query_params = null): NormalizedResponse
     {
-        $url = $this->buildURL(TemplateEndpoints::list());
+        $url = $this->buildURL(EnvelopeTemplateEndpoints::list());
         $params = $this->buildParams($page, $per_page, $query_params);
 
         return $this->request->get($url, ['query' => $params]);
     }
 
-    public function retrieve(string $template_id): NormalizedResponse
+    public function retrieve(string $envelope_template_id): NormalizedResponse
     {
-        return $this->request->get($this->buildURL(TemplateEndpoints::retrieve($template_id)));
+        return $this->request->get($this->buildURL(EnvelopeTemplateEndpoints::retrieve($envelope_template_id)));
     }
 }

@@ -1,56 +1,87 @@
 <?php
+
 namespace Blueink\ClientSDK;
-# TODO need class description
-class Paginated {
-    public mixed $paged_function;
-    public ?int $page;
-    public ?int $per_page;
-    public ?int $item_per_page;
-    public ?array $additional_data;
-    public ?int $total_pages;
-    public ?int $next_page;
-    # TODO need function description
-    /**
-     *
-     */
-    public function __construct(mixed $paged_function, ?int $page = 1, ?int $per_page = 50, ?array $additional_data = null) {
-        $this->paged_function = $paged_function;
-        $this->page = $page;
-        $this->per_page = $per_page;
+
+/**
+ * Iterator that lazily walks the pages of a Blueink list endpoint.
+ *
+ * The supplied callable is invoked with an associative array
+ * ['page' => int, 'per_page' => int, 'additional_data' => array|null]
+ * and is expected to return a NormalizedResponse with a populated
+ * `pagination` field (driven by the X-Blueink-Pagination header).
+ */
+class Paginated implements \Iterator
+{
+    private $paged_function;
+    private int $start_page;
+    private int $per_page;
+    private ?array $additional_data;
+    private int $current_page;
+    private ?int $total_pages = null;
+    private ?NormalizedResponse $current_response = null;
+
+    public function __construct(callable $paged_function, int $page = 1, int $per_page = 50, ?array $additional_data = null)
+    {
+        $this->paged_function  = $paged_function;
+        $this->start_page      = $page;
+        $this->per_page        = $per_page;
         $this->additional_data = $additional_data;
-        $this->total_pages = null;
-        $this->next_page = $page;
-        $this->item_per_page = $per_page;
+        $this->current_page    = $page;
     }
-    # TODO need description & testing function
+
     /**
-     * 
+     * Fetch the next page and return its NormalizedResponse, or null when
+     * the last page has been consumed.
      */
-    public function next() {
-        if (is_null($this->total_pages) && $this->next_page > $this->total_pages) {
-            throw new \ErrorException("Stop Iteration");
+    public function nextPage(): ?NormalizedResponse
+    {
+        if (!is_null($this->total_pages) && $this->current_page > $this->total_pages) {
+            $this->current_response = null;
+
+            return null;
         }
 
-        try {
-            $api_response = $this->paged_function([
-                "page" => $this->next_page,
-                "per_page" => $this->item_per_page,
-                "additional_data" => $this->additional_data
-            ]);
-        } catch (\ErrorException $e) {
-            throw new \ErrorException($e);
-        }
-        
-        if (is_null($api_response['pagination'])) {
-            throw new \ErrorException('Stop Iteration');
+        $response = ($this->paged_function)([
+            'page' => $this->current_page,
+            'per_page' => $this->per_page,
+            'additional_data' => $this->additional_data,
+        ]);
+
+        if ($response instanceof NormalizedResponse && $response->pagination) {
+            $this->total_pages = $response->pagination->total_pages;
         }
 
-        if (is_null($this->total_pages)) {
-            $this->total_pages = $api_response['pagination']->total_pages;
-        }
+        $this->current_page++;
+        $this->current_response = $response;
 
-        $this->next_page = $this->next_page + 1;
+        return $response;
+    }
 
-        return $api_response;
+    public function current(): mixed
+    {
+        return $this->current_response;
+    }
+
+    public function key(): int
+    {
+        return $this->current_page - 1;
+    }
+
+    public function next(): void
+    {
+        $this->nextPage();
+    }
+
+    public function rewind(): void
+    {
+        $this->current_page = $this->start_page;
+        $this->total_pages = null;
+        $this->current_response = null;
+        $this->nextPage();
+    }
+
+    public function valid(): bool
+    {
+        return $this->current_response !== null;
     }
 }

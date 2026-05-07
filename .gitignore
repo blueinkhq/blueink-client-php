@@ -1,6 +1,7 @@
 # PhpStorm
 .idea/
 .DS_Store
+.phpunit.cache/
 
 # Composer
 composer.phar
@@ -11,6 +12,10 @@ examples/_*
 
 .phpunit.result.cache
 .env
+
+# Tooling caches
+.php-cs-fixer.cache
+phpstan.neon
 
 # vscode
 .vscode
