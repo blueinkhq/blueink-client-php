@@ -6,7 +6,7 @@ class BundleHelper
 	public array $packets;
 	public array $documents;
 	public ?string $label;
-	public ?string $in_order;
+	public ?bool $in_order;
 	public ?string $email_subject;
 	public ?string $email_message;
 	public ?string $sms_message;
@@ -20,42 +20,43 @@ class BundleHelper
 	public ?int $reminder_interval;
 	public ?string $reminder_expires;
 	public ?array $cc_sender;
-	# NOTE This description should be change follow the Guzzle description for __construct function
+	public array $file_names;
+	public array $file_types;
+	public array $files;
+
 	/**
-	 * __construct BundleHelper::class
-	 * Parameter should be key => value array with the following key and value bellow
-	 * E.g: ['label' => string, 'email_subject' => string]
-	 * Params[]
-	 * optional label => string
-	 * optional email_subject => string
-	 * optional email_message => string
-	 * optional in_order => bool
-	 * optional is_test => bool
-	 * optional custom_key => string
-	 * optional team => string
-	 * optional cc_emails => array
-	 * optional documents => array of document
-	 * optional packets => array of packets
-	 * optional file_names => array of string
-	 * optional file_types => array of string
-	 * optional files => array of string
+	 * Build a BundleHelper from an associative array of fields.
+	 *
+	 * Recognized keys (all optional):
+	 *   label, email_subject, email_message, sms_message, requester_email,
+	 *   in_order (bool), is_test (bool), custom_key, team, cc_emails (array),
+	 *   status, reminder_offset, reminder_interval, reminder_expires,
+	 *   cc_sender (array), documents (array), packets (array),
+	 *   file_names, file_types, files (parallel arrays for multipart uploads)
 	 */
 	public function __construct(array $params = [])
 	{
-		$this->label = $params['label'] ?? null;
-		$this->email_subject = $params['email_subject'] ?? null;
-		$this->email_message = $params['email_message'] ?? null;
-		$this->in_order = $params['in_order'] ?? false;
-		$this->is_test = $params['is_test'] ?? false;
-		$this->custom_key = $params['custom_key'] ?? null;
-		$this->team = $params['team'] ?? null;
-		$this->cc_emails = $params['cc_emails'] ?? [];
-		$this->documents = $params['documents'] ?? [];
-		$this->packets = $params['packets'] ?? [];
+		$this->label             = $params['label'] ?? null;
+		$this->email_subject     = $params['email_subject'] ?? null;
+		$this->email_message     = $params['email_message'] ?? null;
+		$this->sms_message       = $params['sms_message'] ?? null;
+		$this->requester_email   = $params['requester_email'] ?? null;
+		$this->in_order          = $params['in_order'] ?? false;
+		$this->is_test           = $params['is_test'] ?? false;
+		$this->custom_key        = $params['custom_key'] ?? null;
+		$this->team              = $params['team'] ?? null;
+		$this->cc_emails         = $params['cc_emails'] ?? [];
+		$this->status            = $params['status'] ?? null;
+		$this->reminder_offset   = $params['reminder_offset'] ?? null;
+		$this->reminder_interval = $params['reminder_interval'] ?? null;
+		$this->reminder_expires  = $params['reminder_expires'] ?? null;
+		$this->cc_sender         = $params['cc_sender'] ?? null;
+		$this->documents         = $params['documents'] ?? [];
+		$this->packets           = $params['packets'] ?? [];
 		# for file uploads
-		$this->file_names = $params['file_names'] ?? [];
-		$this->file_types = $params['file_types'] ?? [];
-		$this->files = $params['files'] ?? [];
+		$this->file_names        = $params['file_names'] ?? [];
+		$this->file_types        = $params['file_types'] ?? [];
+		$this->files             = $params['files'] ?? [];
 	}
 	/**
 	 * Add cc emails
@@ -69,110 +70,123 @@ class BundleHelper
 		$this->cc_emails[] = $email;
 	}
 	/**
-	 * Add a file using a URL
-	 * 
-	 * @param string $url: the url
-	 * @param array $additional_data: additional data
-	 * 
-	 * @return string $document->key: return an document key
+	 * Add a Document referenced by a publicly accessible URL.
+	 *
+	 * @return string the generated Document key
 	 */
-	public function addDocumentByURL(string $url = '', array $additional_data = [])
+	public function addDocumentByURL(string $url, array $additional_data = []): string
 	{
-		$document = Document::create(null, array('file_url' => $url));
+		$additional_data['file_url'] = $url;
+		$document = Document::create(null, $additional_data);
 		$this->documents[$document->key] = $document;
 
 		return $document->key;
 	}
+
 	/**
-	 * Add file using b64
-	 * 
-	 * Args: 
-	 * 		filename
-	 * 		b64str
-	 * 		additional_data
-	 * 
-	 * @return string Document key
+	 * Add a Document by base64-encoded contents.
+	 *
+	 * @return string the generated Document key
 	 */
-	public function addDocumentByB64(string $filename, string $b64str, array $additional_data = [])
+	public function addDocumentByB64(string $filename, string $b64str, array $additional_data = []): string
 	{
-		$document = Document::create(null, array('filename' => $filename, 'file_b64' => $b64str, 'additional_data' => $additional_data));
+		$additional_data['filename'] = $filename;
+		$additional_data['file_b64'] = $b64str;
+		$document = Document::create(null, $additional_data);
 		$this->documents[$document->key] = $document;
 
 		return $document->key;
 	}
+
 	/**
-	 * Add file using a file path. File context used, should safely open/close file
-	 * 
-	 * @param string $file_path: the file path uri 
-	 * @param array $additional_data: [key => value] of additional data
-	 * 
-	 * @return string Document key
-	 * 
+	 * Add a Document by reading from a path on disk and base64-encoding it.
 	 */
-	public function addDocumentByPath(string $file_path, array $additional_data = [])
+	public function addDocumentByPath(string $file_path, array $additional_data = []): string
 	{
 		$file_name = basename($file_path);
 		$file_content = file_get_contents($file_path);
-		$b64 = base64_encode(utf8_decode($file_content));
+		$b64 = base64_encode($file_content);
 
-		return BundleHelper::addDocumentByB64($file_name, $b64, $additional_data);
+		return $this->addDocumentByB64($file_name, $b64, $additional_data);
 	}
-	/**
-	 * Add a file using a file path. File context used, should safely open/close file
-	 * 
-	 * @param string $file basically this is file name
-	 * @param array	$additional_data [key => value] array of additional_data
-	 * 
-	 * @return string Document key
-	 */
-	public function addDocumentByFile(mixed $file, array $additional_data = [])
-	{
-		$file_name = basename($file);
-		$file_content = file_get_contents($file_name);
-		$b64 = base64_encode(utf8_decode($file_content));
 
-		return BundleHelper::addDocumentByB64($file_name, $b64, $additional_data);
-	}
 	/**
-	 * Add document by template
-	 * 
-	 * @param string $template_id: template id
-	 * @param array $assignments: array of string
-	 * @param array $initial_field_values
+	 * Add a Document by enqueueing the file path for multipart upload at
+	 * Bundle creation time. The file is not read until the request is sent.
+	 *
+	 * @return int the file_index assigned to the Document
 	 */
-	public function addDocumentTemplate(string $template_id, array $assignments, array $initial_field_values)
+	public function addDocumentByFile(string $file_path, string $content_type = 'application/pdf', array $additional_data = []): int
 	{
+		$file_index = count($this->files);
+		$this->files[] = $file_path;
+		$this->file_names[] = basename($file_path);
+		$this->file_types[] = $content_type;
 
+		$additional_data['file_index'] = $file_index;
+		$document = Document::create(null, $additional_data);
+		$this->documents[$document->key] = $document;
+
+		return $file_index;
 	}
+
 	/**
-	 * Bundle helper function featch array to object
-	 * 
-	 * @param array $data: bundle data
-	 * 
-	 * @return Bundle bundle object
+	 * Build a Document from an existing Template and add it to the Bundle.
 	 */
-	public static function asData(array $data)
+	public function addDocumentTemplate(string $template_id, array $assignments = [], array $field_values = []): string
 	{
-		$packets = self::$packets;
-		$documents = self::$documents;
-		$bundle = Bundle::create($packets, $documents, [
-			'label' => self::$label,
-			'in_order' => self::$in_order,
-			'email_subject' => self::$email_subject,
-			'email_message' => self::$email_message,
-			'sms_message' => self::$sms_message,
-			'requester_email' => self::$requester_email,
-			'cc_emails' => self::$cc_emails,
-			'custom_key' => self::$custom_key,
-			'team' => self::$team,
-			'is_test' => self::$is_test,
-			'status' => self::$status,
-			'reminder_offset' => self::$reminder_offset,
-			'reminder_interval' => self::$reminder_interval,
-			'reminder_expires' => self::$reminder_expires,
-			'cc_sender' => self::$cc_sender
+		$tmpl = TemplateRef::create(null, [
+			'template_id'  => $template_id,
+			'assignments'  => $assignments,
+			'field_values' => $field_values,
 		]);
+		$document = Document::create(null, ['template_id' => $template_id]);
+		$this->documents[$document->key] = $document;
 
-		return $bundle;
+		return $document->key;
+	}
+
+	/**
+	 * Serialize this BundleHelper to the array shape accepted by
+	 * BundleSubClient::create().
+	 */
+	public function asData(): array
+	{
+		$payload = [
+			'label'             => $this->label,
+			'in_order'          => $this->in_order,
+			'email_subject'     => $this->email_subject,
+			'email_message'     => $this->email_message,
+			'sms_message'       => $this->sms_message,
+			'requester_email'   => $this->requester_email,
+			'cc_emails'         => $this->cc_emails,
+			'custom_key'        => $this->custom_key,
+			'team'              => $this->team,
+			'is_test'           => $this->is_test,
+			'status'            => $this->status,
+			'reminder_offset'   => $this->reminder_offset,
+			'reminder_interval' => $this->reminder_interval,
+			'reminder_expires'  => $this->reminder_expires,
+			'cc_sender'         => $this->cc_sender,
+			'packets'           => array_values(array_map([self::class, 'objectToArray'], $this->packets)),
+			'documents'         => array_values(array_map([self::class, 'objectToArray'], $this->documents)),
+		];
+
+		if (!empty($this->files)) {
+			$payload['file_names'] = $this->file_names;
+			$payload['file_types'] = $this->file_types;
+			$payload['files']      = $this->files;
+		}
+
+		return array_filter($payload, fn ($v) => !is_null($v) && $v !== []);
+	}
+
+	private static function objectToArray(mixed $value): mixed
+	{
+		if (is_object($value)) {
+			return array_filter((array) $value, fn ($v) => !is_null($v));
+		}
+
+		return $value;
 	}
 }

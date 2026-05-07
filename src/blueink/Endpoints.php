@@ -70,7 +70,7 @@ class PacketEndpoints
 {
 	public static function embedURL(string $packet_id)
 	{
-		return "/packets/$packet_id/embedURL/";
+		return "/packets/$packet_id/embed_url/";
 	}
 	public static function update(string $packet_id)
 	{
@@ -124,7 +124,7 @@ class WebhookEndpoints {
 	public static function retrieveHeader(string $webhook_header_id) {
 		return "/webhooks/headers/$webhook_header_id/";
 	}
-	public static function update_header(string $webhook_header_id) {
+	public static function updateHeader(string $webhook_header_id) {
 		return "/webhooks/headers/$webhook_header_id/";
 	}
 	public static function deleteHeader(string $webhook_header_id) {

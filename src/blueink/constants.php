@@ -5,14 +5,14 @@ const BLUEINK_PAGINATION_HEADER = "X-Blueink-Pagination";
 
 const DEFAULT_BASE_URL = "https://api.blueink.com/api/v2";
 
-const ENV_BLUEINK_PRIVATE_API_KEY = "BLUEINK_PRIVATE_KEY";
+const ENV_BLUEINK_PRIVATE_API_KEY = "BLUEINK_PRIVATE_API_KEY";
 
 const ENV_BLUEINK_API_URL = "BLUEINK_API_URL";
 
 const TOKEN = "TOKEN ";
 
 const ATTACHMENT_TYPE = array(
-	"JPG" => "jgp",
+	"JPG" => "jpg",
 	"JPEG" => "jpeg",
 	"PNG" => "png",
 	"GIF" => "gif",
@@ -31,7 +31,7 @@ const ATTACHMENT_TYPE = array(
 const BUNDLE_ORDER = array(
 	"CREATED" => "created",
 	"SENT" => "sent",
-	"COMPLETED_AT" => "compeleted_at",
+	"COMPLETED_AT" => "completed_at",
 );
 
 const BUNDLE_STATUS = array(

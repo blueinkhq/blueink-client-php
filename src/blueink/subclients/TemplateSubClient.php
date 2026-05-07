@@ -1,47 +1,30 @@
 <?php
 namespace Blueink\ClientSDK;
 
-require_once __DIR__ . '/SubClient.php';
-require_once __DIR__ . "//../Endpoints.php";
-require_once __DIR__ . "/../helpers/Helper.php";
-class TemplateSubClient extends SubClient {
-    # TODO paged list function for templates
+class TemplateSubClient extends SubClient
+{
     /**
-     * func description here
-     * 
-     * params here
-     * 
-     * @return mixed paginated object
+     * Return a Paginated iterator that lazily fetches Template pages.
      */
-    public function pagedList() {
+    public function pagedList(int $page = 1, int $per_page = 50, ?array $query_params = null): Paginated
+    {
+        $fn = function (array $args) {
+            return $this->list($args['page'], $args['per_page'], $args['additional_data']);
+        };
 
-        return ;
+        return new Paginated($fn, $page, $per_page, $query_params);
     }
-    /**
-     * Return a list of template
-     * 
-     * @param ?int $page: current page, default null
-     * @param ?int $per_page: number of items per page, default null
-     * @param ?array $query_params: the query params, default null
-     * 
-     * @return mixed list of template
-     */
-    public function list(?int $page = null, ?int $per_page = null, ?array $query_params = null) {
-        $url = parent::buildURL(TemplateEndpoints::list());
-        $params = parent::buildParams($page, $per_page, $query_params);
 
-        return parent::$request->get($url, ['params' => $params]);
+    public function list(?int $page = null, ?int $per_page = null, ?array $query_params = null): NormalizedResponse
+    {
+        $url = $this->buildURL(TemplateEndpoints::list());
+        $params = $this->buildParams($page, $per_page, $query_params);
+
+        return $this->request->get($url, ['query' => $params]);
     }
-    /**
-     * Return a singular template by id
-     * 
-     * @param string $template_id: id of the template
-     * 
-     * @return mixed response of the request
-     */
-    public function retrieve(string $template_id) {
-        $url = parent::buildURL(TemplateEndpoints::retrieve($template_id));
 
-        return parent::$request->get($url);
+    public function retrieve(string $template_id): NormalizedResponse
+    {
+        return $this->request->get($this->buildURL(TemplateEndpoints::retrieve($template_id)));
     }
 }

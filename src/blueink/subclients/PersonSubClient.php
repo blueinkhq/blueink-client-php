@@ -1,128 +1,70 @@
 <?php
 namespace Blueink\ClientSDK;
 
-require_once __DIR__ . '/SubClient.php';
-require_once __DIR__ . "//../Endpoints.php";
-require_once __DIR__ . "/../helpers/Helper.php";
 class PersonSubClient extends SubClient
 {
     /**
-     * Create a person (eg. signer) record
-     * 
-     * @param array $data: an array difinition of a person
-     * 
-     * @return mixed Person object
+     * Create a Person (eg. a signer) record.
      */
-    public function create(array $data, ?array $additional_data = null)
+    public function create(array $data, ?array $additional_data = null): NormalizedResponse
     {
-        if (isset($data["name"])) {
-            throw new \ErrorException("A name is required to create a person");
+        if (empty($data["name"])) {
+            throw new \InvalidArgumentException("A name is required to create a Person");
         }
         if (!is_null($additional_data)) {
             $data = Helper::mergeAdditionalData($data, $additional_data);
         }
-        $url = parent::buildURL(PersonEndpoints::create());
+        $url = $this->buildURL(PersonEndpoints::create());
 
-        return parent::$request->post($url, $data);
+        return $this->request->post($url, ['json' => $data]);
     }
+
     /**
-     * Create a person using PersonHelper convenience object
-     * 
-     * @param PersonHelper $person_helper: data as PersonHelper
-     * 
-     * @return mixed Person object
+     * Create a Person using a PersonHelper convenience object.
      */
-    public function createFromPersonHelper(PersonHelper $person_helper, ?array $additional_data = null)
+    public function createFromPersonHelper(PersonHelper $person_helper, ?array $additional_data = null): NormalizedResponse
     {
-        $data = $person_helper->asArray($additional_data);
-        return $this->create(['body' => $data]);
+        return $this->create($person_helper->asArray($additional_data));
     }
-    # TODO need to test the pagedList from bundle helper first
+
     /**
-     * Return an iterable object such that you may laizly fetch a number of person
-     * 
-     * @param ?int $page: start page, default 1
-     * @param ?int $per_page: number of items per page, default 50
-     * @param ?array $additional_data: additional data
-     * 
-     * @return mixed Paginated Iterator object
+     * Return a Paginated iterator that lazily fetches Person pages.
      */
-    public function pagedList(?int $page = 1, ?int $per_page = 50, ?array $additional_data = null)
+    public function pagedList(int $page = 1, int $per_page = 50, ?array $additional_data = null): Paginated
     {
+        $fn = function (array $args) {
+            return $this->list($args['page'], $args['per_page'], $args['additional_data']);
+        };
 
-        return ;
+        return new Paginated($fn, $page, $per_page, $additional_data);
     }
-    /**
-     * Return a list of persons (signer)
-     * 
-     * @param ?int $page: start page, default null
-     * @param ?int $per_page: number of items per page, default null
-     * @param ?array $additional_data: additional data
-     * 
-     * @return mixed List of persons object
-     */
-    public function list(?int $page = null, ?int $per_page = null, ?array $additional_data = null)
+
+    public function list(?int $page = null, ?int $per_page = null, ?array $additional_data = null): NormalizedResponse
     {
-        $params = [];
-        if (!is_null($per_page)) {
-            $params['per_page'] = $per_page;
-        }
-        if (!is_null($page)) {
-            $params['page'] = $page;
-        }
+        $params = $this->buildParams($page, $per_page, $additional_data);
+        $url = $this->buildURL(PersonEndpoints::list());
 
-        if (!is_null($additional_data)) {
-            $params = Helper::mergeAdditionalData($params, $additional_data);
-        }
-
-        $url = parent::buildURL(PersonEndpoints::list());
-        $response = parent::$request->get($url, ['params' => $params]);
-
-        return $response;
+        return $this->request->get($url, ['query' => $params]);
     }
-    /**
-     * Retrieve details on a singular person
-     * 
-     * @param string $person_id: identifying which person to retrieve
-     * 
-     * @return mixed an person object
-     */
-    public function retrieve(string $person_id)
+
+    public function retrieve(string $person_id): NormalizedResponse
     {
-        $url = parent::buildURL(PersonEndpoints::retrieve($person_id));
-
-        return parent::$request->get($url);
+        return $this->request->get($this->buildURL(PersonEndpoints::retrieve($person_id)));
     }
+
     /**
-     * Update a Person record
-     * 
-     * @param string $person_id: identifying which person to update
-     * @param array $data: an [key => value] representation of person's data
-     * @param bool $partial: whether to do a partial update, default false
-     * 
-     * @return mixed an person object
+     * @param bool $partial Issue a PATCH instead of a PUT.
      */
-    public function update(string $person_id, array $data, ?bool $partial = false)
+    public function update(string $person_id, array $data, bool $partial = false): NormalizedResponse
     {
-        $url = parent::buildURL(PersonEndpoints::update($person_id));
-        if ($partial) {
-            $response = parent::$request->patch($url, $data);
-        } else {
-            $response = parent::$request->put($url, $data);
-        }
+        $url = $this->buildURL(PersonEndpoints::update($person_id));
+        $options = ['json' => $data];
 
-        return $response;
+        return $partial ? $this->request->patch($url, $options) : $this->request->put($url, $options);
     }
-    /**
-     * Delete a person
-     * 
-     * @param string $person_id: identifying which person to delete
-     * 
-     * @return mixed # NOTE description for return here
-     */
-    public function delete(string $person_id) {
-        $url = parent::buildURL(PersonEndpoints::delete($person_id));
 
-        return parent::$request->delete($url);
+    public function delete(string $person_id): NormalizedResponse
+    {
+        return $this->request->delete($this->buildURL(PersonEndpoints::delete($person_id)));
     }
 }

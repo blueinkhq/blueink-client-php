@@ -27,18 +27,18 @@ class Field
 	 */
 	public function __construct(array $params = [])
 	{
-		$this->kind = $params["kind"];
-		$this->key = $params["key"];
-		$this->x = $params["x"];
-		$this->y = $params["y"];
-		$this->w = $params["w"];
-		$this->h = $params["h"];
-		$this->label = ($params["label"]) ? $params["label"] : null;
-		$this->page = ($params["page"]) ? $params["page"] : null;
-		$this->v_pattern = ($params["v_pattern"]) ? $params["v_pattern"] : null;
-		$this->v_min = ($params["v_min"]) ? $params["v_min"] : null;
-		$this->v_max = ($params["v_max"]) ? $params["v_max"] : null;
-		$this->editors = ($params["editors"]) ? $params["editors"] : null;
+		$this->kind = $params["kind"] ?? null;
+		$this->key = $params["key"] ?? null;
+		$this->x = $params["x"] ?? null;
+		$this->y = $params["y"] ?? null;
+		$this->w = $params["w"] ?? null;
+		$this->h = $params["h"] ?? null;
+		$this->label = $params["label"] ?? null;
+		$this->page = $params["page"] ?? null;
+		$this->v_pattern = $params["v_pattern"] ?? null;
+		$this->v_min = $params["v_min"] ?? null;
+		$this->v_max = $params["v_max"] ?? null;
+		$this->editors = $params["editors"] ?? null;
 	}
 	/**
 	 * Need some description here
@@ -120,7 +120,7 @@ class Packet
 		$this->email = $params["email"] ?? null;
 		$this->phone = $params["phone"] ?? null;
 		$this->auth_sms = $params["auth_sms"] ?? null;
-		$this->auth_selfie = $params["selfie"] ?? null;
+		$this->auth_selfie = $params["auth_selfie"] ?? null;
 		$this->auth_id = $params["auth_id"] ?? null;
 		$this->deliver_via = $params["deliver_via"] ?? null;
 		$this->person_id = $params["person_id"] ?? null;
@@ -273,9 +273,7 @@ class Document
 		$this->file_b64 = $params['file_b64'] ?? null;
 		$this->file_index = $params['file_index'] ?? null;
 		$this->fields = $params['fields'] ?? null;
-		if (isset($params['parse_tags'])) {
-			$this->parse_tags = $params['parge_tags'] ?? false;
-		}
+		$this->parse_tags = $params['parse_tags'] ?? null;
 	}
 	/**
 	 * 
@@ -287,7 +285,7 @@ class Document
 	 * @return Document
 	 * 
 	 */
-	public static function create(string $key = null, array $additional_data = [])
+	public static function create(?string $key = null, array $additional_data = [])
 	{
 		if (is_null($key)) {
 			$key = Helper::generateKey('doc', 5);

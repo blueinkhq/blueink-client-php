@@ -1,56 +1,53 @@
 <?php
 namespace Blueink\ClientSDK;
-require_once __DIR__ ."/constants.php";
-require_once __DIR__ ."/helpers/RequestHelper.php";
-require_once __DIR__ ."/subclients/BundleSubClient.php";
-require_once __DIR__ ."/subclients/PersonSubClient.php";
-require_once __DIR__ ."/subclients/PacketSubClient.php";
-require_once __DIR__ ."/subclients/TemplateSubClient.php";
-require_once __DIR__ ."/subclients/WebhookSubClient.php";
 
+/**
+ * Top-level Blueink API client. Holds shared auth + HTTP configuration and
+ * exposes resource-specific subclients (bundles, persons, packets, templates,
+ * webhooks).
+ */
 class Client
 {
-	private $private_api_key;
-	private $base_url;
+	private string $private_api_key;
+	private string $base_url;
 	private RequestHelper $request_helper;
+
 	public BundleSubClient $bundles;
 	public PersonSubClient $persons;
 	public PacketSubClient $packets;
 	public TemplateSubClient $templates;
 	public WebhookSubClient $webhooks;
+
 	/**
-	 * Need some description here following guzzle
+	 * @param string|null $private_api_key  Blueink private API key. Falls back to the
+	 *                                      BLUEINK_PRIVATE_API_KEY environment variable.
+	 * @param string|null $base_url         API base URL. Falls back to BLUEINK_API_URL,
+	 *                                      then to DEFAULT_BASE_URL.
+	 * @param bool        $raise_exceptions When false, 4XX/5XX responses are returned as
+	 *                                      NormalizedResponse instead of throwing.
 	 */
-	function __construct(?string $private_api_key = null, ?string $base_url = null)
-	{
+	public function __construct(
+		?string $private_api_key = null,
+		?string $base_url = null,
+		bool $raise_exceptions = true
+	) {
+		$private_api_key = $private_api_key ?: (getenv(ENV_BLUEINK_PRIVATE_API_KEY) ?: null);
+		if (!$private_api_key) {
+			throw new \InvalidArgumentException(
+				"A Blueink Private API Key must be provided on Client initialization "
+				. "or specified via the " . ENV_BLUEINK_PRIVATE_API_KEY . " environment variable."
+			);
+		}
 		$this->private_api_key = $private_api_key;
+
+		$base_url = $base_url ?: (getenv(ENV_BLUEINK_API_URL) ?: DEFAULT_BASE_URL);
 		$this->base_url = $base_url;
-		
-		# if private_api_key is null, the .env file should have BLUEINK_PRIVATE_API_KEY
-		if (is_null($this->private_api_key)) {
-			$this->private_api_key = getenv("BLUEINK_PRIVATE_API_KEY");
-		}
 
-		if (!$this->private_api_key) {
-			throw new \InvalidArgumentException("A Blueink Private API Key must be provided on Client initialization 
-			or specified via the environment variable");
-		}
-		
-		# if not using the default base url, the .env file should have BLUEINK_BASE_URL
-		if (is_null($this->base_url)) {
-			$this->base_url = getenv("BLUEINK_API_URL");
-		}
-
-		if (!$this->base_url) {
-			$this->base_url = DEFAULT_BASE_URL;
-		}
-
-		# create helper
-		$this->request_helper = new RequestHelper($this->private_api_key);	
-		$this->bundles = new BundleSubClient($this->base_url, $this->request_helper);
-		$this->persons = new PersonSubClient($this->base_url, $this->request_helper);
-		$this->packets = new PacketSubClient($this->private_api_key, $this->request_helper);
-		$this->templates = new TemplateSubClient($this->private_api_key, $this->request_helper);
-		$this->webhooks = new WebhookSubClient($this->private_api_key, $this->request_helper);
+		$this->request_helper = new RequestHelper($this->private_api_key, $raise_exceptions);
+		$this->bundles   = new BundleSubClient($this->base_url, $this->request_helper);
+		$this->persons   = new PersonSubClient($this->base_url, $this->request_helper);
+		$this->packets   = new PacketSubClient($this->base_url, $this->request_helper);
+		$this->templates = new TemplateSubClient($this->base_url, $this->request_helper);
+		$this->webhooks  = new WebhookSubClient($this->base_url, $this->request_helper);
 	}
 }
