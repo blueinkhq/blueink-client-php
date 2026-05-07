@@ -12,6 +12,10 @@ class BundleEndpoints
 	{
 		return "/bundles/";
 	}
+	public static function createFromEnvelopeTemplate()
+	{
+		return "/bundles/create_from_envelope_template/";
+	}
 	public static function list()
 	{
 		return "/bundles/";
@@ -94,6 +98,17 @@ class TemplateEndpoints {
 	}
 	public static function retrieve(string $template_id) {
 		return "/templates/$template_id/";
+	}
+}
+/**
+ * List all of the envelope template endpoints
+ */
+class EnvelopeTemplateEndpoints {
+	public static function list() {
+		return "/envelope-templates/";
+	}
+	public static function retrieve(string $envelope_template_id) {
+		return "/envelope-templates/$envelope_template_id/";
 	}
 }
 /**

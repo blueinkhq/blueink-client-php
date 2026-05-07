@@ -30,10 +30,8 @@ class Helper
 	 */
 	public static function mergeAdditionalData(?array $data = [], ?array $additional_data = [])
 	{
-		if (!is_array($data) || !is_array($additional_data))
-			throw new \ErrorException("Merge Error! Data is not array \n\n");
-
-		if (!is_null($additional_data)) {
+		$data = $data ?? [];
+		if (is_array($additional_data) && $additional_data !== []) {
 			$data = array_merge($data, $additional_data);
 		}
 
@@ -41,16 +39,72 @@ class Helper
 	}
 	/**
 	 * Remove null properties from object
-	 * 
+	 *
 	 * @param object $object: Object
-	 * 
+	 *
 	 * @return mixed Object after remove null properties
 	 */
 	public static function removeNullProperties(?object $object) {
 		if (is_null($object) && !is_object($object)) {
 			return null;
 		}
-		
+
 		return (object) array_filter((array) $object);
+	}
+
+	/**
+	 * Recursively serialize a model graph (objects, nested arrays, scalars)
+	 * to an associative-array shape suitable for JSON encoding. Strips null
+	 * values and empty arrays at every level. Mirrors the Python SDK's
+	 * `dict(exclude_unset=True, exclude_none=True)`.
+	 */
+	public static function modelToArray(mixed $value): mixed
+	{
+		if (is_object($value)) {
+			$out = [];
+			foreach ((array) $value as $key => $child) {
+				if (is_string($key) && ($key === '' || $key[0] === "\0")) {
+					continue;
+				}
+				$converted = self::modelToArray($child);
+				if (self::isPresent($converted)) {
+					$out[$key] = $converted;
+				}
+			}
+
+			return $out;
+		}
+
+		if (is_array($value)) {
+			$is_list = array_is_list($value);
+			$out = [];
+			foreach ($value as $key => $child) {
+				$converted = self::modelToArray($child);
+				if (!self::isPresent($converted)) {
+					continue;
+				}
+				if ($is_list) {
+					$out[] = $converted;
+				} else {
+					$out[$key] = $converted;
+				}
+			}
+
+			return $out;
+		}
+
+		return $value;
+	}
+
+	private static function isPresent(mixed $value): bool
+	{
+		if (is_null($value)) {
+			return false;
+		}
+		if (is_array($value) && $value === []) {
+			return false;
+		}
+
+		return true;
 	}
 }

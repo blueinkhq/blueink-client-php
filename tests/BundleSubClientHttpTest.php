@@ -168,4 +168,44 @@ class BundleSubClientHttpTest extends TestCase
         $this->assertSame(self::BASE . '/bundles/b1/files/',  (string) $built['history'][1]['request']->getUri());
         $this->assertSame(self::BASE . '/bundles/b1/data/',   (string) $built['history'][2]['request']->getUri());
     }
+
+    public function testCreateFromEnvelopeTemplatePostsJsonToEnvelopeEndpoint(): void
+    {
+        $built = $this->client([new Response(201, [], '{"id":"bun_E"}')]);
+        $payload = [
+            'packets'           => [['key' => 'sgn-1', 'name' => 'A', 'email' => 'a@x.com']],
+            'envelope_template' => ['template_id' => 'T-abc'],
+            'is_test'           => true,
+        ];
+
+        $resp = $built['sub']->createFromEnvelopeTemplate($payload);
+
+        $req = $built['history'][0]['request'];
+        $this->assertSame('POST', $req->getMethod());
+        $this->assertSame(self::BASE . '/bundles/create_from_envelope_template/', (string) $req->getUri());
+        $this->assertSame($payload, json_decode((string) $req->getBody(), true));
+        $this->assertSame('bun_E', $resp->data['id']);
+    }
+
+    public function testCreateFromEnvelopeTemplateHelperUsesAsDataForEnvelopeTemplate(): void
+    {
+        $built = $this->client([new Response(201, [], '{"id":"bun_F"}')]);
+
+        $bh = new BundleHelper(['label' => 'Env Bundle', 'is_test' => true]);
+        $bh->addSigner(name: 'Jane', email: 'jane@example.com', key: 'sgn-1');
+        $bh->setEnvelopeTemplate('T-xyz', ['company' => 'ACME']);
+
+        $built['sub']->createFromEnvelopeTemplateHelper($bh);
+
+        $req = $built['history'][0]['request'];
+        $this->assertSame('POST', $req->getMethod());
+        $this->assertSame(self::BASE . '/bundles/create_from_envelope_template/', (string) $req->getUri());
+        $body = json_decode((string) $req->getBody(), true);
+        $this->assertSame('T-xyz', $body['envelope_template']['template_id']);
+        $this->assertSame('company', $body['envelope_template']['field_values'][0]['key']);
+        $this->assertSame('ACME', $body['envelope_template']['field_values'][0]['initial_value']);
+        $this->assertSame('jane@example.com', $body['packets'][0]['email']);
+        $this->assertSame('Env Bundle', $body['label']);
+        $this->assertTrue($body['is_test']);
+    }
 }

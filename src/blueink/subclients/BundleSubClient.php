@@ -74,6 +74,31 @@ class BundleSubClient extends SubClient
 	}
 
 	/**
+	 * Create a Bundle from an envelope template. Expects the payload shape
+	 * produced by BundleHelper::asDataForEnvelopeTemplate(), but accepts any
+	 * pre-built array.
+	 */
+	public function createFromEnvelopeTemplate(?array $data = null): NormalizedResponse
+	{
+		if (is_null($data)) {
+			throw new \InvalidArgumentException("Envelope template data is required");
+		}
+
+		$url = $this->buildURL(BundleEndpoints::createFromEnvelopeTemplate());
+
+		return $this->request->post($url, ['json' => $data]);
+	}
+
+	/**
+	 * Convenience wrapper that serializes a BundleHelper configured with an
+	 * envelope template and posts it to create_from_envelope_template.
+	 */
+	public function createFromEnvelopeTemplateHelper(BundleHelper $bundle_helper): NormalizedResponse
+	{
+		return $this->createFromEnvelopeTemplate($bundle_helper->asDataForEnvelopeTemplate());
+	}
+
+	/**
 	 * Returns a Paginated iterator that lazily fetches Bundle pages.
 	 */
 	public function pagedList(int $page = 1, int $per_page = 50, bool $related_data = false, ?array $query_params = null): Paginated

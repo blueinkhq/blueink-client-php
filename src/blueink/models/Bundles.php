@@ -21,6 +21,9 @@ class Field
 	public $v_pattern;
 	public $v_min;
 	public $v_max;
+	public $v_regex;
+	public $v_regex_msg;
+	public $v_attachment_types;
 	public $editors;
 	/**
 	 * Need some description here
@@ -38,6 +41,9 @@ class Field
 		$this->v_pattern = $params["v_pattern"] ?? null;
 		$this->v_min = $params["v_min"] ?? null;
 		$this->v_max = $params["v_max"] ?? null;
+		$this->v_regex = $params["v_regex"] ?? null;
+		$this->v_regex_msg = $params["v_regex_msg"] ?? null;
+		$this->v_attachment_types = $params["v_attachment_types"] ?? null;
 		$this->editors = $params["editors"] ?? null;
 	}
 	/**
@@ -152,95 +158,191 @@ class Packet
 	 * 
 	 * @return Packet
 	 */
-	public static function create(?string $key = null, ?string $name = null, ?array $additional_data = [])
+	public static function create(?string $key = null, ?string $name = null, ?array $additional_data = null): self
 	{
 		if (is_null($key)) {
 			$key = Helper::generateKey("packet", 5);
 		}
-		$params = array(
+		$params = [
 			"key" => $key,
 			"name" => $name,
-		);
+		];
 		$params = Helper::mergeAdditionalData($params, $additional_data);
 
-		$obj = new Packet($params);
+		return new Packet($params);
+	}
+}
+class AutoPlacement
+{
+	public ?string $kind;
+	public ?string $search;
+	public ?int $w;
+	public ?int $h;
+	public ?int $offset_x;
+	public ?int $offset_y;
+	public ?int $page;
+	public ?array $editors;
+	public ?array $v_attachment_types;
 
-		return Helper::removeNullProperties($obj);
+	public function __construct(array $params = [])
+	{
+		$this->kind = $params["kind"] ?? null;
+		$this->search = $params["search"] ?? null;
+		$this->w = $params["w"] ?? null;
+		$this->h = $params["h"] ?? null;
+		$this->offset_x = $params["offset_x"] ?? null;
+		$this->offset_y = $params["offset_y"] ?? null;
+		$this->page = $params["page"] ?? null;
+		$this->editors = $params["editors"] ?? null;
+		$this->v_attachment_types = $params["v_attachment_types"] ?? null;
+	}
+
+	public static function create(string $kind, string $search, int $w, int $h, ?array $additional_data = null): self
+	{
+		$params = [
+			"kind" => $kind,
+			"search" => $search,
+			"w" => $w,
+			"h" => $h,
+		];
+		$params = Helper::mergeAdditionalData($params, $additional_data);
+
+		return new AutoPlacement($params);
+	}
+
+	public function addEditor(string $editor): void
+	{
+		if (is_null($this->editors)) {
+			$this->editors = [];
+		}
+		$this->editors[] = $editor;
+	}
+}
+class EnvelopeTemplateFieldValue
+{
+	public ?string $key;
+	public mixed $initial_value;
+
+	public function __construct(array $params = [])
+	{
+		$this->key = $params["key"] ?? null;
+		$this->initial_value = $params["initial_value"] ?? null;
+	}
+
+	public static function create(string $key, mixed $initial_value, ?array $additional_data = null): self
+	{
+		$params = ["key" => $key, "initial_value" => $initial_value];
+		$params = Helper::mergeAdditionalData($params, $additional_data);
+
+		return new EnvelopeTemplateFieldValue($params);
+	}
+}
+class EnvelopeTemplate
+{
+	public ?string $template_id;
+	public ?array $field_values;
+
+	public function __construct(array $params = [])
+	{
+		$this->template_id = $params["template_id"] ?? null;
+		$this->field_values = $params["field_values"] ?? null;
+	}
+
+	public static function create(string $template_id, ?array $field_values = null, ?array $additional_data = null): self
+	{
+		$params = ["template_id" => $template_id, "field_values" => $field_values];
+		$params = Helper::mergeAdditionalData($params, $additional_data);
+
+		return new EnvelopeTemplate($params);
+	}
+
+	public function addFieldValue(EnvelopeTemplateFieldValue $field_value): void
+	{
+		if (is_null($this->field_values)) {
+			$this->field_values = [];
+		}
+		$this->field_values[] = $field_value;
 	}
 }
 class TemplateRefFieldValue
 {
-	public $key;
-	public $initial_value;
-	/**
-	 * Need some description here
-	 */
+	public ?string $key;
+	public mixed $initial_value;
+
 	public function __construct(array $params = [])
 	{
-		$this->key = $params["key"];
-		$this->initial_value = $params["initial_value"];
+		$this->key = $params["key"] ?? null;
+		$this->initial_value = $params["initial_value"] ?? null;
 	}
-	/**
-	 * Need some description here
-	 */
-	public static function create($key, $initial_value, $additional_data)
+
+	public static function create(string $key, mixed $initial_value, ?array $additional_data = null): self
 	{
-		$params = array(
+		$params = [
 			"key" => $key,
 			"initial_value" => $initial_value,
-		);
+		];
 		$params = Helper::mergeAdditionalData($params, $additional_data);
-		$obj = new TemplateRefFieldValue($params);
 
-		return $obj;
+		return new TemplateRefFieldValue($params);
+	}
+}
+class TemplateRefAssignment
+{
+	public ?string $role;
+	public ?string $signer;
+
+	public function __construct(array $params = [])
+	{
+		$this->role = $params["role"] ?? null;
+		$this->signer = $params["signer"] ?? null;
+	}
+
+	public static function create(string $role, string $signer, ?array $additional_data = null): self
+	{
+		$params = ["role" => $role, "signer" => $signer];
+		$params = Helper::mergeAdditionalData($params, $additional_data);
+
+		return new TemplateRefAssignment($params);
 	}
 }
 class TemplateRef
 {
-	public $template_id;
-	public $assignments;
-	public $field_values;
-	/**
-	 * Need some description here
-	 */
+	public ?string $key;
+	public ?string $template_id;
+	public ?array $assignments;
+	public ?array $field_values;
+
 	public function __construct(array $params = [])
 	{
-		$this->template_id = $params["template_id"];
-		$this->assignments = $params["assignments"];
-		$this->field_values = $params["field_values"];
+		$this->key          = $params["key"] ?? null;
+		$this->template_id  = $params["template_id"] ?? null;
+		$this->assignments  = $params["assignments"] ?? null;
+		$this->field_values = $params["field_values"] ?? null;
 	}
-	/**
-	 * Need some description here
-	 */
-	public static function create($key = null, array $additional_data = [])
+
+	public static function create(?string $key = null, ?array $additional_data = null): self
 	{
 		if (is_null($key)) {
 			$key = Helper::generateKey('tmpl', 5);
 		}
-		$params = array('key' => $key);
+		$params = ['key' => $key];
 		$params = Helper::mergeAdditionalData($params, $additional_data);
 
-		$obj = new TemplateRef($params);
-
-		return $obj;
+		return new TemplateRef($params);
 	}
-	/**
-	 * Need some description here
-	 */
-	public function addAssignment($assignment)
+
+	public function addAssignment(TemplateRefAssignment $assignment): void
 	{
-		if ($this->assignments == null) {
-			$this->assigments = array();
+		if ($this->assignments === null) {
+			$this->assignments = [];
 		}
 		$this->assignments[] = $assignment;
 	}
-	/**
-	 * Need some description here
-	 */
-	public function addFieldValue($field_value)
+
+	public function addFieldValue(TemplateRefFieldValue $field_value): void
 	{
-		if ($this->field_values == null) {
-			$this->field_values = array();
+		if ($this->field_values === null) {
+			$this->field_values = [];
 		}
 		$this->field_values[] = $field_value;
 	}
@@ -250,73 +352,53 @@ class Document
 	public string $key;
 	public ?string $file_url;
 	public ?string $file_b64;
+	public ?string $file_html;
+	public ?string $filename;
 	public ?int $file_index;
 	public ?array $fields;
+	public ?array $auto_placements;
+	public ?string $html_fields_mode;
 	public ?bool $parse_tags;
-	/**
-	 * __construct Document::class
-	 * parameter should be key => value array with the following key and value bellow, 
-	 * E.g ['key' => string, 'file_url' => string]
-	 * 
-	 * *** Noted: One of file_url, file_index, file_b64 must be included
-	 * required key => string
-	 * optional file_url => string
-	 * optional file_b64 => string
-	 * optional file_index => int
-	 * optional fields => array of Field::class
-	 * optional parse_tags => bool, default: false
-	 */
+
 	public function __construct(array $params = [])
 	{
-		$this->key = $params['key'] ?? throw new ErrorException("Missing key");
-		$this->file_url = $params['file_url'] ?? null;
-		$this->file_b64 = $params['file_b64'] ?? null;
-		$this->file_index = $params['file_index'] ?? null;
-		$this->fields = $params['fields'] ?? null;
-		$this->parse_tags = $params['parse_tags'] ?? null;
+		$this->key              = $params['key'] ?? throw new ErrorException("Missing key");
+		$this->file_url         = $params['file_url'] ?? null;
+		$this->file_b64         = $params['file_b64'] ?? null;
+		$this->file_html        = $params['file_html'] ?? null;
+		$this->filename         = $params['filename'] ?? null;
+		$this->file_index       = $params['file_index'] ?? null;
+		$this->fields           = $params['fields'] ?? null;
+		$this->auto_placements  = $params['auto_placements'] ?? null;
+		$this->html_fields_mode = $params['html_fields_mode'] ?? null;
+		$this->parse_tags       = $params['parse_tags'] ?? null;
 	}
-	/**
-	 * 
-	 * create Document::class with key
-	 * 
-	 * @param string $key, defaul: null
-	 * @param array  $additional_data, defaul: null
-	 * 
-	 * @return Document
-	 * 
-	 */
-	public static function create(?string $key = null, array $additional_data = [])
+
+	public static function create(?string $key = null, ?array $additional_data = null): self
 	{
 		if (is_null($key)) {
 			$key = Helper::generateKey('doc', 5);
 		}
 		$params = ["key" => $key];
 		$params = Helper::mergeAdditionalData($params, $additional_data);
-		$obj = new Document($params);
 
-		return Helper::removeNullProperties($obj);
+		return new Document($params);
 	}
-	/**
-	 * 
-	 * add field to document
-	 * 
-	 * @param Field $field
-	 * 
-	 * @return void
-	 */
-	public function addField(Field $field)
+
+	public function addField(Field $field): void
 	{
 		if (is_null($this->fields)) {
-			$this->fields = array();
+			$this->fields = [];
 		}
 		$this->fields[] = $field;
 	}
-	/**
-	 * Need some description here
-	 */
-	public function addAssignment($assignment)
+
+	public function addAutoPlacement(AutoPlacement $auto_placement): void
 	{
-		// ???
+		if (is_null($this->auto_placements)) {
+			$this->auto_placements = [];
+		}
+		$this->auto_placements[] = $auto_placement;
 	}
 }
 class Bundle
@@ -338,6 +420,7 @@ class Bundle
 	public ?int $reminder_interval;
 	public ?string $reminder_expires;
 	public ?array $cc_sender;
+	public ?string $signing_brand;
 	/**
 	 * __construct Bundle::class
 	 * parameter should be key => value array with the following key and value bellow, 
@@ -379,6 +462,7 @@ class Bundle
 		$this->reminder_interval = $params["reminder_interval"] ?? null;
 		$this->reminder_expires = $params["reminder_expires"] ?? null;
 		$this->cc_sender = $params["cc_sender"] ?? null;
+		$this->signing_brand = $params["signing_brand"] ?? null;
 	}
 	/**
 	 * Create Bundle

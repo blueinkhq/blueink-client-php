@@ -4,7 +4,7 @@ namespace Blueink\ClientSDK;
 /**
  * Top-level Blueink API client. Holds shared auth + HTTP configuration and
  * exposes resource-specific subclients (bundles, persons, packets, templates,
- * webhooks).
+ * envelope_templates, webhooks).
  */
 class Client
 {
@@ -16,6 +16,7 @@ class Client
 	public PersonSubClient $persons;
 	public PacketSubClient $packets;
 	public TemplateSubClient $templates;
+	public EnvelopeTemplateSubClient $envelope_templates;
 	public WebhookSubClient $webhooks;
 
 	/**
@@ -48,6 +49,7 @@ class Client
 		$this->persons   = new PersonSubClient($this->base_url, $this->request_helper);
 		$this->packets   = new PacketSubClient($this->base_url, $this->request_helper);
 		$this->templates = new TemplateSubClient($this->base_url, $this->request_helper);
+		$this->envelope_templates = new EnvelopeTemplateSubClient($this->base_url, $this->request_helper);
 		$this->webhooks  = new WebhookSubClient($this->base_url, $this->request_helper);
 	}
 }
