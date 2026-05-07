@@ -1,0 +1,10 @@
+# Revisions listed here are skipped by `git blame --ignore-revs-file` and by
+# the major code hosts (GitHub, GitLab) when computing blame. Add commits that
+# performed mechanical, codebase-wide reformatting and contain no behavior
+# changes.
+#
+# Configure local git to use this file automatically:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Reformat codebase to PSR-12 via PHP-CS-Fixer
+24dd356832a07ef2900334f71fc8fe54bad1b189
