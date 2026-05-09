@@ -3,6 +3,14 @@
 A PHP SDK for the [Blueink](https://blueink.com) eSignature REST API.
 For full API reference see the [Blueink API v2 docs](https://developer.blueink.com).
 
+### Note on Version Correspondence with Other Blueink SDKs
+
+The **2.x** major version of this client library has feature equivalence with the **1.x** major versions of Blueink's other SDKs ([blueink-client-js](https://github.com/blueinkhq/blueink-client-js), [blueink-client-python](https://github.com/blueinkhq/blueink-client-python), etc). 
+
+The difference in version numbers reflects the fact that that this SDK pre-dates the others, and had
+already published a 1.x version. Bringing this SDK to feature equivalence with the others required breaking changes, hence the version bump.
+
+
 ## Requirements
 
 - PHP 8.1 or newer
