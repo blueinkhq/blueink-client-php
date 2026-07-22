@@ -104,6 +104,8 @@ class Packet
     public ?string $deliver_via;
     public ?string $person_id;
     public ?int $order;
+    public ?bool $requires_witness;
+    public ?string $witness_nominated_by;
     /**
      * __construct Packets::class
      * parameter should be key => value array with the following key and value bellow
@@ -119,6 +121,8 @@ class Packet
      * optional deliver_via => string
      * optional person_id => string
      * optional order => int
+     * optional requires_witness => bool
+     * optional witness_nominated_by => string
      */
     public function __construct(array $params = [])
     {
@@ -132,6 +136,8 @@ class Packet
         $this->deliver_via = $params['deliver_via'] ?? null;
         $this->person_id = $params['person_id'] ?? null;
         $this->order = $params['order'] ?? null;
+        $this->requires_witness = $params['requires_witness'] ?? null;
+        $this->witness_nominated_by = $params['witness_nominated_by'] ?? null;
     }
     /**
      *
