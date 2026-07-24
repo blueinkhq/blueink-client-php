@@ -18,6 +18,7 @@ class Client
     public PacketSubClient $packets;
     public TemplateSubClient $templates;
     public EnvelopeTemplateSubClient $envelope_templates;
+    public VerifySubClient $verify;
     public WebhookSubClient $webhooks;
 
     /**
@@ -51,6 +52,7 @@ class Client
         $this->packets   = new PacketSubClient($this->base_url, $this->request_helper);
         $this->templates = new TemplateSubClient($this->base_url, $this->request_helper);
         $this->envelope_templates = new EnvelopeTemplateSubClient($this->base_url, $this->request_helper);
+        $this->verify    = new VerifySubClient($this->base_url, $this->request_helper);
         $this->webhooks  = new WebhookSubClient($this->base_url, $this->request_helper);
     }
 }

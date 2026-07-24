@@ -28,4 +28,15 @@ class TemplateSubClient extends SubClient
     {
         return $this->request->get($this->buildURL(TemplateEndpoints::retrieve($template_id)));
     }
+
+    /**
+     * Partially update a Template (PATCH). Typically used to update metadata
+     * on an existing Template.
+     */
+    public function update(string $template_id, array $data): NormalizedResponse
+    {
+        $url = $this->buildURL(TemplateEndpoints::update($template_id));
+
+        return $this->request->patch($url, ['json' => $data]);
+    }
 }
