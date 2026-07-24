@@ -141,6 +141,37 @@ class BundleSubClient extends SubClient
         return $response;
     }
 
+    /**
+     * Partially update a Bundle (PATCH). Typically used on draft Bundles to
+     * update fields such as signing_brand, team, expires, cc_emails, etc.
+     */
+    public function update(string $bundle_id, array $data): NormalizedResponse
+    {
+        $url = $this->buildURL(BundleEndpoints::update($bundle_id));
+
+        return $this->request->patch($url, ['json' => $data]);
+    }
+
+    /**
+     * Send a draft Bundle (POST).
+     */
+    public function send(string $bundle_id): NormalizedResponse
+    {
+        $url = $this->buildURL(BundleEndpoints::send($bundle_id));
+
+        return $this->request->post($url);
+    }
+
+    /**
+     * Validate a draft Bundle (PUT). Returns can_send, msg, n_docs.
+     */
+    public function validate(string $bundle_id): NormalizedResponse
+    {
+        $url = $this->buildURL(BundleEndpoints::validate($bundle_id));
+
+        return $this->request->put($url);
+    }
+
     public function cancel(string $bundle_id): NormalizedResponse
     {
         $url = $this->buildURL(BundleEndpoints::cancel($bundle_id));

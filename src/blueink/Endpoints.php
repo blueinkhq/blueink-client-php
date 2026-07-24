@@ -26,6 +26,18 @@ class BundleEndpoints
     {
         return "/bundles/$bundle_id/";
     }
+    public static function update(string $bundle_id)
+    {
+        return "/bundles/$bundle_id/";
+    }
+    public static function send(string $bundle_id)
+    {
+        return "/bundles/$bundle_id/send/";
+    }
+    public static function validate(string $bundle_id)
+    {
+        return "/bundles/$bundle_id/validate/";
+    }
     public static function cancel(string $bundle_id)
     {
         return "/bundles/$bundle_id/cancel/";
@@ -103,6 +115,20 @@ class TemplateEndpoints
     public static function retrieve(string $template_id)
     {
         return "/templates/$template_id/";
+    }
+    public static function update(string $template_id)
+    {
+        return "/templates/$template_id/";
+    }
+}
+/**
+ * Verify endpoint (POST /verify/)
+ */
+class VerifyEndpoints
+{
+    public static function create()
+    {
+        return '/verify/';
     }
 }
 /**

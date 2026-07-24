@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-07-23
+
+Brings the PHP SDK to APIv2 2.16 feature equivalence, mirroring the .NET
+and Python SDK 2.16 work.
+
+### Added
+
+- `VerifySubClient` (`POST /verify/`), exposed as `$client->verify`.
+- Bundle draft lifecycle methods: `$client->bundles->update()` (PATCH),
+  `$client->bundles->send()` (POST), `$client->bundles->validate()` (PUT),
+  plus the corresponding `BundleEndpoints` paths.
+- `$client->templates->update()` (PATCH `/templates/{id}/`) for metadata
+  updates, plus the `TemplateEndpoints::update()` path.
+- `packet_declined` and `bundle_signer_reassigned` event types in
+  `EVENT_TYPE`.
+
 ## [2.0.0] - 2026-05-07
 
 A major overhaul to bring the PHP SDK to feature parity and UX consistency
