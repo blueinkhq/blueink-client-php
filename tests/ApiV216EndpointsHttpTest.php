@@ -95,4 +95,21 @@ class ApiV216EndpointsHttpTest extends TestCase
         $this->assertContains('packet_declined', $values);
         $this->assertContains('bundle_signer_reassigned', $values);
     }
+
+    public function testApiV218ConstantsAndExpires(): void
+    {
+        $this->assertSame('stp', \Blueink\ClientSDK\FIELD_KIND['STAMP']);
+        $this->assertSame('ra', \Blueink\ClientSDK\PACKET_STATUS['REASSIGNED']);
+
+        $helper = new \Blueink\ClientSDK\BundleHelper([
+            'label' => 'expires-test',
+            'expires' => '2026-12-31T23:59:59Z',
+            'signing_brand' => 'brand-1',
+        ]);
+        $helper->addDocumentByURL('https://example.com/doc.pdf');
+        $helper->addSigner(name: 'Alice', email: 'alice@example.com');
+        $data = $helper->asData();
+        $this->assertSame('2026-12-31T23:59:59Z', $data['expires']);
+        $this->assertSame('brand-1', $data['signing_brand']);
+    }
 }

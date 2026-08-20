@@ -71,6 +71,7 @@ const FIELD_KIND = [
     'CHECKBOX' => 'chk',
     'CHECKBOXES' => 'cbx',
     'ATTACHMENT' => 'att',
+    'STAMP' => 'stp',
 ];
 
 const PACKET_STATUS = [
@@ -82,6 +83,7 @@ const PACKET_STATUS = [
     'EXPIRED' => 'ex',
     'COMPLETE' => 'co',
     'FAILED' => 'fa',
+    'REASSIGNED' => 'ra',
 ];
 
 const V_PATTERN = [

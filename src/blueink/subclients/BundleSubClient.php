@@ -143,7 +143,8 @@ class BundleSubClient extends SubClient
 
     /**
      * Partially update a Bundle (PATCH). Typically used on draft Bundles to
-     * update fields such as signing_brand, team, expires, cc_emails, etc.
+     * update fields such as signing_brand, team, expires, cc_emails,
+     * allow_signer_reassign, and allow_chained_signer_reassign.
      */
     public function update(string $bundle_id, array $data): NormalizedResponse
     {

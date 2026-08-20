@@ -16,6 +16,7 @@ class BundleHelper
     public ?string $custom_key;
     public ?string $team;
     public ?string $signing_brand;
+    public ?string $expires;
     public ?bool $is_test;
     public ?string $status;
     public ?int $reminder_offset;
@@ -32,7 +33,7 @@ class BundleHelper
      *
      * Recognized keys (all optional):
      *   label, email_subject, email_message, sms_message, requester_email,
-     *   in_order (bool), is_test (bool), custom_key, team, signing_brand,
+     *   in_order (bool), is_test (bool), custom_key, team, signing_brand, expires,
      *   cc_emails (array), status, reminder_offset, reminder_interval,
      *   reminder_expires, cc_sender (array), documents (array), packets (array),
      *   file_names, file_types, files (parallel arrays for multipart uploads)
@@ -49,6 +50,7 @@ class BundleHelper
         $this->custom_key        = $params['custom_key'] ?? null;
         $this->team              = $params['team'] ?? null;
         $this->signing_brand     = $params['signing_brand'] ?? null;
+        $this->expires           = $params['expires'] ?? null;
         $this->cc_emails         = $params['cc_emails'] ?? [];
         $this->status            = $params['status'] ?? null;
         $this->reminder_offset   = $params['reminder_offset'] ?? null;
@@ -428,6 +430,7 @@ class BundleHelper
             'custom_key'    => $this->custom_key,
             'team'          => $this->team,
             'signing_brand' => $this->signing_brand,
+            'expires'       => $this->expires,
         ] as $key => $value) {
             if (!is_null($value) && $value !== [] && $value !== false) {
                 $result[$key] = $value;
@@ -453,6 +456,7 @@ class BundleHelper
             'custom_key'        => $this->custom_key,
             'team'              => $this->team,
             'signing_brand'     => $this->signing_brand,
+            'expires'           => $this->expires,
             'is_test'           => $this->is_test,
             'status'            => $this->status,
             'reminder_offset'   => $this->reminder_offset,
