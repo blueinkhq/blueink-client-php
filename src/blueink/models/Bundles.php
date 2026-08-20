@@ -428,6 +428,9 @@ class Bundle
     public ?string $reminder_expires;
     public ?array $cc_sender;
     public ?string $signing_brand;
+    public ?string $expires;
+    public ?bool $allow_signer_reassign;
+    public ?bool $allow_chained_signer_reassign;
     /**
      * __construct Bundle::class
      * parameter should be key => value array with the following key and value bellow,
@@ -449,6 +452,10 @@ class Bundle
      * optional reminder_interval => string
      * optional reminder_expires => string
      * optional cc_sender => string
+     * optional signing_brand => string
+     * optional expires => string (ISO 8601 date or datetime; APIv2 2.17.0+)
+     * optional allow_signer_reassign => bool (readable; set via PATCH; APIv2 2.18.0+)
+     * optional allow_chained_signer_reassign => bool (readable; set via PATCH; APIv2 2.18.0+)
      */
     public function __construct(array $params = [])
     {
@@ -470,6 +477,9 @@ class Bundle
         $this->reminder_expires = $params['reminder_expires'] ?? null;
         $this->cc_sender = $params['cc_sender'] ?? null;
         $this->signing_brand = $params['signing_brand'] ?? null;
+        $this->expires = $params['expires'] ?? null;
+        $this->allow_signer_reassign = $params['allow_signer_reassign'] ?? null;
+        $this->allow_chained_signer_reassign = $params['allow_chained_signer_reassign'] ?? null;
     }
     /**
      * Create Bundle

@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-08-14
+
+Brings the PHP SDK to APIv2 2.18 feature equivalence (headline 2.18.1).
+
+### Added
+
+- `FIELD_KIND['STAMP']` (`stp`) for Stamp fields (APIv2 2.18.0).
+- `PACKET_STATUS['REASSIGNED']` (`ra`) when a signer has reassigned (APIv2 2.18.0).
+- `expires` on `BundleHelper` / `Bundle` for create-time expiration (APIv2 2.17.0).
+- `allow_signer_reassign` and `allow_chained_signer_reassign` on the `Bundle`
+  model (readable; settable via `$client->bundles->update()` PATCH).
+
+### Notes
+
+- APIv2 2.18.1 is a server-side `expires` validation fix on `PATCH /bundles/{id}/`
+  (400 instead of 500; future-dated check). No additional client surface.
+
 ## [2.1.0] - 2026-07-23
 
 Brings the PHP SDK to APIv2 2.16 feature equivalence, mirroring the .NET
