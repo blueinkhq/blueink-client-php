@@ -366,6 +366,9 @@ class Document
     public ?array $auto_placements;
     public ?string $html_fields_mode;
     public ?bool $parse_tags;
+    public ?string $converted_adobe_fields_to;
+    /** @var array<string, string>|null */
+    public ?array $adobe_field_assignments;
 
     public function __construct(array $params = [])
     {
@@ -379,6 +382,8 @@ class Document
         $this->auto_placements  = $params['auto_placements'] ?? null;
         $this->html_fields_mode = $params['html_fields_mode'] ?? null;
         $this->parse_tags       = $params['parse_tags'] ?? null;
+        $this->converted_adobe_fields_to = $params['converted_adobe_fields_to'] ?? null;
+        $this->adobe_field_assignments = $params['adobe_field_assignments'] ?? null;
     }
 
     public static function create(?string $key = null, ?array $additional_data = null): self
@@ -431,6 +436,9 @@ class Bundle
     public ?string $expires;
     public ?bool $allow_signer_reassign;
     public ?bool $allow_chained_signer_reassign;
+    public ?int $max_reminders;
+    public ?string $owner_name;
+    public ?string $owner_email;
     /**
      * __construct Bundle::class
      * parameter should be key => value array with the following key and value bellow,
@@ -456,6 +464,9 @@ class Bundle
      * optional expires => string (ISO 8601 date or datetime; APIv2 2.17.0+)
      * optional allow_signer_reassign => bool (readable; set via PATCH; APIv2 2.18.0+)
      * optional allow_chained_signer_reassign => bool (readable; set via PATCH; APIv2 2.18.0+)
+     * optional max_reminders => int|null (read-only; APIv2 2.19.0+)
+     * optional owner_name => string (read-only; APIv2 2.19.0+)
+     * optional owner_email => string (read-only; APIv2 2.19.0+)
      */
     public function __construct(array $params = [])
     {
@@ -480,6 +491,9 @@ class Bundle
         $this->expires = $params['expires'] ?? null;
         $this->allow_signer_reassign = $params['allow_signer_reassign'] ?? null;
         $this->allow_chained_signer_reassign = $params['allow_chained_signer_reassign'] ?? null;
+        $this->max_reminders = array_key_exists('max_reminders', $params) ? $params['max_reminders'] : null;
+        $this->owner_name = $params['owner_name'] ?? null;
+        $this->owner_email = $params['owner_email'] ?? null;
     }
     /**
      * Create Bundle

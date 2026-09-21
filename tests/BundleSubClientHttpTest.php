@@ -170,6 +170,18 @@ class BundleSubClientHttpTest extends TestCase
         $this->assertSame(self::BASE . '/bundles/b1/data/', (string) $built['history'][2]['request']->getUri());
     }
 
+    public function testGenerateFilesPutsToFilesEndpoint(): void
+    {
+        $built = $this->client([new Response(200, [], '{"id":"b1"}')]);
+
+        $resp = $built['sub']->generateFiles('b1');
+
+        $req = $built['history'][0]['request'];
+        $this->assertSame('PUT', $req->getMethod());
+        $this->assertSame(self::BASE . '/bundles/b1/files/', (string) $req->getUri());
+        $this->assertSame('b1', $resp->data['id']);
+    }
+
     public function testCreateFromEnvelopeTemplatePostsJsonToEnvelopeEndpoint(): void
     {
         $built = $this->client([new Response(201, [], '{"id":"bun_E"}')]);
