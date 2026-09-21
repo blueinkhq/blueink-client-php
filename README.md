@@ -226,6 +226,10 @@ $client->packets->remind($packet_id);
 ```php
 $client->templates->list();
 $client->templates->retrieve($template_id);
+$client->templates->delete($template_id);
+$client->templates->createPreparationSession([
+    'allowed_data_flow_tags' => ['customer_name', 'acme:*'],
+]);
 ```
 
 ### Envelope Templates

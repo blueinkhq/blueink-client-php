@@ -39,4 +39,30 @@ class TemplateSubClient extends SubClient
 
         return $this->request->patch($url, ['json' => $data]);
     }
+
+    /**
+     * Soft-delete a Document Template (DELETE). The API disables the template
+     * and removes it from account libraries (HTTP 204). Globally shared
+     * templates cannot be deleted (HTTP 403).
+     */
+    public function delete(string $template_id): NormalizedResponse
+    {
+        return $this->request->delete($this->buildURL(TemplateEndpoints::delete($template_id)));
+    }
+
+    /**
+     * Create an embedded Document Template preparation session.
+     *
+     * Pass `allowed_data_flow_tags` as exact tag names or namespace-prefix
+     * patterns such as `acme:*`. An empty list allows no tags; omit the field
+     * to leave the session unfiltered.
+     */
+    public function createPreparationSession(array $data = []): NormalizedResponse
+    {
+        $url = $this->buildURL(TemplateEndpoints::createPreparationSession());
+        // PHP encodes [] as a JSON list; the API expects a JSON object ({}).
+        $payload = $data === [] ? new \stdClass() : $data;
+
+        return $this->request->post($url, ['json' => $payload]);
+    }
 }
