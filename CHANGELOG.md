@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-09-21
+
+Brings the PHP SDK to APIv2 2.20 feature equivalence (headline 2.20.0).
+
+### Added
+
+- `EVENT_TYPE` values `doc_template_created`, `doc_template_updated`, and
+  `doc_template_deleted` (APIv2 2.20.0). Subscribing requires the Document
+  Template webhooks account feature.
+- `$client->templates->delete()` (`DELETE /templates/{id}/`) to soft-delete a
+  Document Template (HTTP 204; 403 on globally shared templates).
+- `$client->templates->createPreparationSession()` (`POST /templates/preparation_session/`),
+  including optional `allowed_data_flow_tags` (exact names or `namespace:*`;
+  empty list allows none). This also closes the 2.16 template-prepare-session gap.
+
 ## [2.3.0] - 2026-09-16
 
 Brings the PHP SDK to APIv2 2.19 feature equivalence (headline 2.19.0).

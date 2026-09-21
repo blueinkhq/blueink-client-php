@@ -120,6 +120,14 @@ class TemplateEndpoints
     {
         return "/templates/$template_id/";
     }
+    public static function delete(string $template_id)
+    {
+        return "/templates/$template_id/";
+    }
+    public static function createPreparationSession()
+    {
+        return '/templates/preparation_session/';
+    }
 }
 /**
  * Verify endpoint (POST /verify/)

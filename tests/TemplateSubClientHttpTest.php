@@ -48,4 +48,40 @@ class TemplateSubClientHttpTest extends TestCase
         $this->assertSame('GET', $req->getMethod());
         $this->assertSame(self::BASE . '/templates/tpl_1/', (string) $req->getUri());
     }
+
+    public function testDeleteHitsTemplatePath(): void
+    {
+        $built = $this->client([new Response(204, [], '')]);
+
+        $built['sub']->delete('tpl_1');
+
+        $req = $built['history'][0]['request'];
+        $this->assertSame('DELETE', $req->getMethod());
+        $this->assertSame(self::BASE . '/templates/tpl_1/', (string) $req->getUri());
+    }
+
+    public function testCreatePreparationSessionPostsAllowedTags(): void
+    {
+        $built = $this->client([new Response(201, [], '{"url":"https://app.example/prepare"}')]);
+
+        $built['sub']->createPreparationSession([
+            'allowed_data_flow_tags' => ['customer_name', 'acme:*'],
+        ]);
+
+        $req = $built['history'][0]['request'];
+        $this->assertSame('POST', $req->getMethod());
+        $this->assertSame(self::BASE . '/templates/preparation_session/', (string) $req->getUri());
+        $body = json_decode((string) $req->getBody(), true);
+        $this->assertSame(['customer_name', 'acme:*'], $body['allowed_data_flow_tags']);
+    }
+
+    public function testCreatePreparationSessionEmptyPayloadEncodesAsObject(): void
+    {
+        $built = $this->client([new Response(201, [], '{"url":"https://app.example/prepare"}')]);
+
+        $built['sub']->createPreparationSession();
+
+        $req = $built['history'][0]['request'];
+        $this->assertSame('{}', (string) $req->getBody());
+    }
 }

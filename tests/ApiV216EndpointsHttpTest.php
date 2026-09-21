@@ -94,6 +94,9 @@ class ApiV216EndpointsHttpTest extends TestCase
         $values = array_values(\Blueink\ClientSDK\EVENT_TYPE);
         $this->assertContains('packet_declined', $values);
         $this->assertContains('bundle_signer_reassigned', $values);
+        $this->assertContains('doc_template_created', $values);
+        $this->assertContains('doc_template_updated', $values);
+        $this->assertContains('doc_template_deleted', $values);
     }
 
     public function testApiV218ConstantsAndExpires(): void
