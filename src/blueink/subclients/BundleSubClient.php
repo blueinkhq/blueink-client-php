@@ -190,6 +190,16 @@ class BundleSubClient extends SubClient
         return $this->request->get($this->buildURL(BundleEndpoints::listFiles($bundle_id)));
     }
 
+    /**
+     * Enqueue unsigned filled-PDF generation for an incomplete Bundle.
+     * Requires early file access (FEATURE.API_DATA_EARLY). Poll listFiles until
+     * ready (APIv2 2.19.0+).
+     */
+    public function generateFiles(string $bundle_id): NormalizedResponse
+    {
+        return $this->request->put($this->buildURL(BundleEndpoints::listFiles($bundle_id)));
+    }
+
     public function listData(string $bundle_id): NormalizedResponse
     {
         return $this->request->get($this->buildURL(BundleEndpoints::listData($bundle_id)));

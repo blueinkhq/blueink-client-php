@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-09-16
+
+Brings the PHP SDK to APIv2 2.19 feature equivalence (headline 2.19.0).
+
+### Added
+
+- `max_reminders`, `owner_name`, and `owner_email` on the `Bundle` model (read-only; APIv2 2.19.0).
+- `converted_adobe_fields_to` and `adobe_field_assignments` on the `Document` model
+  (APIv2 2.19.0).
+- `$client->bundles->generateFiles()` (`PUT /bundles/{id}/files/`) to enqueue unsigned
+  filled-PDF generation on incomplete envelopes when early file access is enabled.
+
+### Notes
+
+- APIv2 2.18.2 is a docs/audit-event change only (`bundle_modified` post-send). No
+  additional client surface.
+
 ## [2.2.0] - 2026-08-14
 
 Brings the PHP SDK to APIv2 2.18 feature equivalence (headline 2.18.1).

@@ -229,6 +229,34 @@ class BundlesModelTest extends TestCase
         $this->assertEquals('Test Bundle', $bundle->label);
     }
 
+    public function testBundleAcceptsApiV219ReadOnlyFields(): void
+    {
+        $bundle = Bundle::create(
+            [Packet::create('packet_1')],
+            [Document::create('doc_1')],
+            [
+                'max_reminders' => 3,
+                'owner_name' => 'Ada Lovelace',
+                'owner_email' => 'ada@example.com',
+            ]
+        );
+
+        $this->assertSame(3, $bundle->max_reminders);
+        $this->assertSame('Ada Lovelace', $bundle->owner_name);
+        $this->assertSame('ada@example.com', $bundle->owner_email);
+    }
+
+    public function testDocumentAcceptsAdobeFieldAssignments(): void
+    {
+        $doc = Document::create('doc_1', [
+            'converted_adobe_fields_to' => 'signer-1',
+            'adobe_field_assignments' => ['Signature1' => 'signer-1'],
+        ]);
+
+        $this->assertSame('signer-1', $doc->converted_adobe_fields_to);
+        $this->assertSame(['Signature1' => 'signer-1'], $doc->adobe_field_assignments);
+    }
+
     /**
      * Test Bundle::addPacket adds packet to bundle
      */
