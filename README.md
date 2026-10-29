@@ -190,6 +190,10 @@ $client->bundles->cancel($bundle_id);
 $client->bundles->listEvents($bundle_id);
 $client->bundles->listFiles($bundle_id);
 $client->bundles->listData($bundle_id);
+$client->bundles->createPreparationSession([
+    'allow_add_signers' => false,
+    'send_button' => ['text' => 'Submit'],
+]);
 ```
 
 ### Persons

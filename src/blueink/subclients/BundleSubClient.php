@@ -144,7 +144,8 @@ class BundleSubClient extends SubClient
     /**
      * Partially update a Bundle (PATCH). Typically used on draft Bundles to
      * update fields such as signing_brand, team, expires, cc_emails,
-     * allow_signer_reassign, and allow_chained_signer_reassign.
+     * allow_signer_reassign, allow_chained_signer_reassign, and
+     * allow_decline_to_sign.
      */
     public function update(string $bundle_id, array $data): NormalizedResponse
     {
@@ -203,6 +204,21 @@ class BundleSubClient extends SubClient
     public function listData(string $bundle_id): NormalizedResponse
     {
         return $this->request->get($this->buildURL(BundleEndpoints::listData($bundle_id)));
+    }
+
+    /**
+     * Create an embedded Bundle preparation session.
+     *
+     * Optional `send_button` customizes the embedded Send button (APIv2 2.21.0+).
+     * Optional `allow_add_signers` (default true) hides Add Signer / Recipient
+     * when false (APIv2 2.22.0+).
+     */
+    public function createPreparationSession(array $data = []): NormalizedResponse
+    {
+        $url = $this->buildURL(BundleEndpoints::createPreparationSession());
+        $payload = $data === [] ? new \stdClass() : $data;
+
+        return $this->request->post($url, ['json' => $payload]);
     }
 
     /**

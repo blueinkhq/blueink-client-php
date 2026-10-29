@@ -84,4 +84,17 @@ class TemplateSubClientHttpTest extends TestCase
         $req = $built['history'][0]['request'];
         $this->assertSame('{}', (string) $req->getBody());
     }
+
+    public function testUpdatePatchesTemplatePath(): void
+    {
+        $built = $this->client([new Response(200, [], '{"id":"tpl_1"}')]);
+
+        $built['sub']->update('tpl_1', ['metadata' => ['a' => 1]]);
+
+        $req = $built['history'][0]['request'];
+        $this->assertSame('PATCH', $req->getMethod());
+        $this->assertSame(self::BASE . '/templates/tpl_1/', (string) $req->getUri());
+        $body = json_decode((string) $req->getBody(), true);
+        $this->assertSame(1, $body['metadata']['a']);
+    }
 }

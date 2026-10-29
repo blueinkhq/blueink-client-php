@@ -170,6 +170,27 @@ class BundleSubClientHttpTest extends TestCase
         $this->assertSame(self::BASE . '/bundles/b1/data/', (string) $built['history'][2]['request']->getUri());
     }
 
+    public function testCreatePreparationSessionPostsJson(): void
+    {
+        $built = $this->client([new Response(201, [], '{"url":"https://example.com/prep"}')]);
+        $payload = [
+            'allow_add_signers' => false,
+            'send_button' => [
+                'text' => 'Submit',
+                'color' => '#ffffff',
+                'background_color' => '#111827',
+            ],
+        ];
+
+        $resp = $built['sub']->createPreparationSession($payload);
+
+        $req = $built['history'][0]['request'];
+        $this->assertSame('POST', $req->getMethod());
+        $this->assertSame(self::BASE . '/bundles/preparation_session/', (string) $req->getUri());
+        $this->assertSame($payload, json_decode((string) $req->getBody(), true));
+        $this->assertSame('https://example.com/prep', $resp->data['url']);
+    }
+
     public function testGenerateFilesPutsToFilesEndpoint(): void
     {
         $built = $this->client([new Response(200, [], '{"id":"b1"}')]);
@@ -220,5 +241,40 @@ class BundleSubClientHttpTest extends TestCase
         $this->assertSame('jane@example.com', $body['packets'][0]['email']);
         $this->assertSame('Env Bundle', $body['label']);
         $this->assertTrue($body['is_test']);
+    }
+
+    public function testUpdatePatchesBundlePath(): void
+    {
+        $built = $this->client([new Response(200, [], '{"id":"B-1"}')]);
+
+        $built['sub']->update('B-1', ['signing_brand' => 'SB-1']);
+
+        $req = $built['history'][0]['request'];
+        $this->assertSame('PATCH', $req->getMethod());
+        $this->assertSame(self::BASE . '/bundles/B-1/', (string) $req->getUri());
+        $body = json_decode((string) $req->getBody(), true);
+        $this->assertSame('SB-1', $body['signing_brand']);
+    }
+
+    public function testSendPostsSendPath(): void
+    {
+        $built = $this->client([new Response(200, [], '{}')]);
+
+        $built['sub']->send('B-1');
+
+        $req = $built['history'][0]['request'];
+        $this->assertSame('POST', $req->getMethod());
+        $this->assertSame(self::BASE . '/bundles/B-1/send/', (string) $req->getUri());
+    }
+
+    public function testValidatePutsValidatePath(): void
+    {
+        $built = $this->client([new Response(200, [], '{"can_send":true}')]);
+
+        $built['sub']->validate('B-1');
+
+        $req = $built['history'][0]['request'];
+        $this->assertSame('PUT', $req->getMethod());
+        $this->assertSame(self::BASE . '/bundles/B-1/validate/', (string) $req->getUri());
     }
 }

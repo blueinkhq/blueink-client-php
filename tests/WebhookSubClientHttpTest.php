@@ -146,4 +146,16 @@ class WebhookSubClientHttpTest extends TestCase
         $this->assertSame('POST', $h[1]['request']->getMethod());
         $this->assertSame(self::BASE . '/webhooks/secret/regenerate/', (string) $h[1]['request']->getUri());
     }
+
+    public function testEventTypeConstantsIncludeWebhookValues(): void
+    {
+        $values = array_values(\Blueink\ClientSDK\EVENT_TYPE);
+        $this->assertContains('packet_declined', $values);
+        $this->assertContains('bundle_signer_reassigned', $values);
+        $this->assertContains('doc_template_created', $values);
+        $this->assertContains('doc_template_updated', $values);
+        $this->assertContains('doc_template_deleted', $values);
+        $this->assertContains('packet_sent', $values);
+        $this->assertContains('bundle_expired', $values);
+    }
 }

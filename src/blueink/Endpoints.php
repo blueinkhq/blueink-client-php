@@ -54,6 +54,10 @@ class BundleEndpoints
     {
         return "/bundles/$bundle_id/data/";
     }
+    public static function createPreparationSession()
+    {
+        return '/bundles/preparation_session/';
+    }
 }
 /**
  * List all of the person endpoints

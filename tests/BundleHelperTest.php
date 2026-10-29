@@ -229,4 +229,24 @@ class BundleHelperTest extends TestCase
         $this->assertCount(2, $helper->documents);
         $this->assertCount(2, $helper->packets);
     }
+
+    public function testFieldKindAndPacketStatusConstants(): void
+    {
+        $this->assertSame('stp', \Blueink\ClientSDK\FIELD_KIND['STAMP']);
+        $this->assertSame('ra', \Blueink\ClientSDK\PACKET_STATUS['REASSIGNED']);
+    }
+
+    public function testAsDataIncludesExpiresAndSigningBrand(): void
+    {
+        $helper = new BundleHelper([
+            'label' => 'expires-test',
+            'expires' => '2026-12-31T23:59:59Z',
+            'signing_brand' => 'brand-1',
+        ]);
+        $helper->addDocumentByURL('https://example.com/doc.pdf');
+        $helper->addSigner(name: 'Alice', email: 'alice@example.com');
+        $data = $helper->asData();
+        $this->assertSame('2026-12-31T23:59:59Z', $data['expires']);
+        $this->assertSame('brand-1', $data['signing_brand']);
+    }
 }
