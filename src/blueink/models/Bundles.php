@@ -436,6 +436,7 @@ class Bundle
     public ?string $expires;
     public ?bool $allow_signer_reassign;
     public ?bool $allow_chained_signer_reassign;
+    public ?bool $allow_decline_to_sign;
     public ?int $max_reminders;
     public ?string $owner_name;
     public ?string $owner_email;
@@ -464,6 +465,7 @@ class Bundle
      * optional expires => string (ISO 8601 date or datetime; APIv2 2.17.0+)
      * optional allow_signer_reassign => bool (readable; set via PATCH; APIv2 2.18.0+)
      * optional allow_chained_signer_reassign => bool (readable; set via PATCH; APIv2 2.18.0+)
+     * optional allow_decline_to_sign => bool (create and update; APIv2 2.22.0+)
      * optional max_reminders => int|null (read-only; APIv2 2.19.0+)
      * optional owner_name => string (read-only; APIv2 2.19.0+)
      * optional owner_email => string (read-only; APIv2 2.19.0+)
@@ -491,6 +493,7 @@ class Bundle
         $this->expires = $params['expires'] ?? null;
         $this->allow_signer_reassign = $params['allow_signer_reassign'] ?? null;
         $this->allow_chained_signer_reassign = $params['allow_chained_signer_reassign'] ?? null;
+        $this->allow_decline_to_sign = $params['allow_decline_to_sign'] ?? null;
         $this->max_reminders = array_key_exists('max_reminders', $params) ? $params['max_reminders'] : null;
         $this->owner_name = $params['owner_name'] ?? null;
         $this->owner_email = $params['owner_email'] ?? null;

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-10-27
+
+Brings the PHP SDK to APIv2 2.22 feature equivalence (headline 2.22.0, includes 2.21.0).
+
+### Added
+
+- `EVENT_TYPE` values `packet_sent` and `bundle_expired` (APIv2 2.22.0).
+- `$client->bundles->createPreparationSession()` (`POST /bundles/preparation_session/`),
+  including optional `send_button` (APIv2 2.21.0) and `allow_add_signers`
+  (APIv2 2.22.0). This also closes the 2.16 bundle-prepare-session gap.
+- `allow_decline_to_sign` on the `Bundle` model (create and update; APIv2 2.22.0).
+
 ## [2.4.0] - 2026-09-21
 
 Brings the PHP SDK to APIv2 2.20 feature equivalence (headline 2.20.0).

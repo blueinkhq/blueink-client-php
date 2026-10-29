@@ -229,6 +229,17 @@ class BundlesModelTest extends TestCase
         $this->assertEquals('Test Bundle', $bundle->label);
     }
 
+    public function testBundleAcceptsAllowDeclineToSign(): void
+    {
+        $bundle = Bundle::create(
+            [Packet::create('packet_1')],
+            [Document::create('doc_1')],
+            ['allow_decline_to_sign' => false]
+        );
+
+        $this->assertFalse($bundle->allow_decline_to_sign);
+    }
+
     public function testBundleAcceptsApiV219ReadOnlyFields(): void
     {
         $bundle = Bundle::create(
